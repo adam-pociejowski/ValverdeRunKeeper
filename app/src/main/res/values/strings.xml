@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">ValverdeRunKeeper</string>
+    <string name="pauseButton">PAUSE</string>
+    <string name="stopButton">STOP</string>
+    <string name="startButton">START</string>
+    <string name="initDistanceText">0.00 km</string>
+    <string name="initSpeedText">0.00 km/h</string>
+    <string name="initTimeText">0:00:00</string>
+    <string name="speedUnits">km/h</string>
+    <string name="distanceUnits">km</string>
+
+    <string name="accuracyInitStatus">None</string>
+    <string name="accuracyExcellentStatus">Excellent</string>
+    <string name="accuracyVeryGoodStatus">Very Good</string>
+    <string name="accuracyGoodStatus">Good</string>
+    <string name="accuracyFairStatus">Fair</string>
+    <string name="accuracyBadStatus">Bad</string>
+    <string name="accuracyFatalStatus">Fatal</string>
+</resources>
