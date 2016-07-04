@@ -16,4 +16,15 @@
     <string name="accuracyFairStatus">Fair</string>
     <string name="accuracyBadStatus">Bad</string>
     <string name="accuracyFatalStatus">Fatal</string>
+    <string name="title_activity_finalize_run">FinalizeRunActivity</string>
+    <string name="hello_round">Hello Round World!</string>
+    <string name="hello_square">Hello Square World!</string>
+
+    <string name="timeLabel">Time:</string>
+    <string name="avgSpeedLabel">Averange Speed:</string>
+    <string name="distanceLabel">Distance:</string>
+    <string name="caloriesLabel">Calories:</string>
+
+    <string name="saveButton">SAVE</string>
+    <string name="deleteButton">DELETE</string>
 </resources>

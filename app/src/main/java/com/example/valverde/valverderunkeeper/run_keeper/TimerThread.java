@@ -1,4 +1,4 @@
-package com.example.valverde.valverderunkeeper;
+package com.example.valverde.valverderunkeeper.run_keeper;
 
 import android.os.Handler;
 import android.widget.TextView;

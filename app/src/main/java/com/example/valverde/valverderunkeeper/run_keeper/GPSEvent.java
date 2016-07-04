@@ -1,6 +1,6 @@
-package com.example.valverde.valverderunkeeper;
+package com.example.valverde.valverderunkeeper.run_keeper;
 
-class GPSEvent {
+public class GPSEvent {
     private long time;
     private double lat;
     private double lng;

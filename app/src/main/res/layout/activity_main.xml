@@ -5,11 +5,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="100"
-    tools:context="com.example.valverde.valverderunkeeper.MainActivity">
+    tools:context=".run_keeper.MainActivity">
 
 
     <LinearLayout android:layout_weight="3"
-        android:layout_marginTop="15dp"
         android:layout_marginStart="15dp"
         android:orientation="vertical"
         android:layout_width="wrap_content"
@@ -31,9 +30,12 @@
     </LinearLayout>
 
 
-    <TextView android:layout_weight="90"
+    <fragment android:id="@+id/map"
+        android:layout_weight="100"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp" />
+
 
     <TextView android:id="@+id/timeField"
         android:text="@string/initTimeText"
@@ -45,7 +47,6 @@
     <LinearLayout
         android:paddingStart="40dp"
         android:paddingEnd="20dp"
-        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
