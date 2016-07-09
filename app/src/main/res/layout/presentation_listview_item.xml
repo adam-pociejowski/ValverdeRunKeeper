@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="40dp">
+
+    <TextView android:id="@+id/presentationListViewItemNumber"
+        style="@style/presentationListViewItemFont"
+        android:gravity="center"
+        android:layout_weight="1.5"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+
+    <TextView android:id="@+id/presentationListViewItemDate"
+        style="@style/presentationListViewItemFont"
+        android:gravity="end|center"
+        android:layout_weight="3.5"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+
+    <TextView android:id="@+id/presentationListViewItemDistance"
+        style="@style/presentationListViewItemFont"
+        android:gravity="end|center"
+        android:layout_weight="3"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+
+    <TextView android:id="@+id/presentationListViewItemTime"
+        style="@style/presentationListViewItemFont"
+        android:gravity="end|center"
+        android:layout_weight="3"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+
+    <TextView android:id="@+id/presentationListViewItemSpeed"
+        style="@style/presentationListViewItemFont"
+        android:gravity="end|center"
+        android:layout_weight="3.5"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+</LinearLayout>

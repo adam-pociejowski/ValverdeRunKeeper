@@ -1,12 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    android:background="@color/lightGreen"
     tools:context="com.example.valverde.valverderunkeeper.statistics.ResultsPresentationActivity">
 
-</RelativeLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:background="@color/green"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/presentationLabelsFont"
+            android:text="@string/presentationNumberLabel"
+            android:layout_weight="1.5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="@style/presentationLabelsFont"
+            android:text="@string/presentationDateLabel"
+            android:layout_weight="3.5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="@style/presentationLabelsFont"
+            android:text="@string/presentationDistanceLabel"
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="@style/presentationLabelsFont"
+            android:text="@string/presentationTimeLabel"
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="@style/presentationLabelsFont"
+            android:text="@string/presentationAVGSpeedLabel"
+            android:layout_weight="3.5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <ListView android:id="@+id/resultsPresentationListView"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </ListView>
+</LinearLayout>

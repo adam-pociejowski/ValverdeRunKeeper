@@ -48,7 +48,7 @@ public class TrackerActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     private String runningState = "init";
     private PolylineOptions polylineOptions = new PolylineOptions();
-    private TimerThread timerThread;
+    private Timer timerThread;
     private GoogleMap map;
     @BindView(R.id.accuracyProgressBar) ProgressBar accuracyProgressBar;
     @BindView(R.id.speedField) TextView speedField;
@@ -81,7 +81,7 @@ public class TrackerActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (runningState.equals("init")) {
-                    timerThread = new TimerThread(handler, timerField);
+                    timerThread = new Timer(handler, timerField);
                     timerThread.start();
                     runningState = "started";
                     startButton.setText(getString(R.string.pauseButton));

@@ -3,7 +3,7 @@ package com.example.valverde.valverderunkeeper.running;
 import android.os.Handler;
 import android.widget.TextView;
 
-public class TimerThread extends Thread {
+public class Timer extends Thread {
     private static final Object lock = new Object();
     private static final int HOUR_FACTOR = 3600000;
     private static final int MINUTE_FACTOR = 60000;
@@ -15,7 +15,7 @@ public class TimerThread extends Thread {
     private TextView timeField;
     private Handler handler;
 
-    public TimerThread(Handler handler, TextView timeField) {
+    public Timer(Handler handler, TextView timeField) {
         this.handler = handler;
         this.timeField = timeField;
     }

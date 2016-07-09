@@ -33,5 +33,12 @@
     <string name="saveButton">SAVE</string>
     <string name="deleteButton">DELETE</string>
 
+    <!-- Results presentation -->
+    <string name="presentationNumberLabel">Num</string>
+    <string name="presentationDateLabel">Date</string>
+    <string name="presentationDistanceLabel">Distance</string>
+    <string name="presentationTimeLabel">Time</string>
+    <string name="presentationAVGSpeedLabel">Speed</string>
+
 
 </resources>
