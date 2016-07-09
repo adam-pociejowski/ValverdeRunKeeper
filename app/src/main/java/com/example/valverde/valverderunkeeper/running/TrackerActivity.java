@@ -1,4 +1,4 @@
-package com.example.valverde.valverderunkeeper.run_keeper;
+package com.example.valverde.valverderunkeeper.running;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -20,7 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.valverde.valverderunkeeper.R;
-import com.example.valverde.valverderunkeeper.database.DatabaseHelper;
+import com.example.valverde.valverderunkeeper.data.DatabaseHelper;
+import com.example.valverde.valverderunkeeper.running.processing_result.FinalizeRunActivity;
+import com.example.valverde.valverderunkeeper.running.processing_result.RunResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
@@ -34,26 +36,34 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class TrackerActivity extends AppCompatActivity {
     private static final double INIT_LAT = 50.79829564, INIT_LNG = 16.25238182;
     private static final int GPS_ERROR_DIALOG_REQUEST = 9001;
     private static final int EVENTS_REFRESH_TIME_IN_SECONDS = 3;
     private static final float DEFAULT_ZOOM = 16;
-    private TextView speedField, distanceField, progressBarField, timerField;
-    private ProgressBar accuracyProgressBar;
     private Handler handler = new Handler();
-    private Button startButton, stopButton;
     private DatabaseHelper databaseHelper;
     private String runningState = "init";
     private PolylineOptions polylineOptions = new PolylineOptions();
     private TimerThread timerThread;
     private GoogleMap map;
+    @BindView(R.id.accuracyProgressBar) ProgressBar accuracyProgressBar;
+    @BindView(R.id.speedField) TextView speedField;
+    @BindView(R.id.distanceField) TextView distanceField;
+    @BindView(R.id.accuracyProgressBarField) TextView progressBarField;
+    @BindView(R.id.timeField) TextView timerField;
+    @BindView(R.id.stopButton) Button stopButton;
+    @BindView(R.id.startButton) Button startButton;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         databaseHelper = new DatabaseHelper(this);
 //        databaseHelper.onUpgrade(databaseHelper.getWritableDatabase(), 1, 1);
 
@@ -67,13 +77,6 @@ public class MainActivity extends AppCompatActivity {
             else
                 Log.i("D", "Map is not available");
         }
-
-        speedField = (TextView) findViewById(R.id.speedField);
-        distanceField = (TextView) findViewById(R.id.distanceField);
-        accuracyProgressBar = (ProgressBar) findViewById(R.id.accuracyProgressBar);
-        progressBarField = (TextView) findViewById(R.id.accuracyProgressBarField);
-        timerField = (TextView) findViewById(R.id.timeField);
-        startButton = (Button) findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,16 +98,23 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        stopButton = (Button) findViewById(R.id.stopButton);
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (timerThread != null) {
                     timerThread.setRunning(false);
+                    TrackManager manager = TrackManager.getInstance();
+                    manager.addLastEventToRoute();
+                    double distance = manager.getOverallDistance();
+                    long overallTime = timerThread.getOverallTime();
+                    ArrayList<GPSEvent> route = manager.getRoute();
+                    RunResult result = new RunResult(overallTime, distance, 0);
+                    Log.d("RESULT", "time: "+overallTime+" | distance: "+distance);
                     timerThread = null;
-                    runningState = "stopped";
+                    Intent intent = new Intent(getApplicationContext(), FinalizeRunActivity.class);
+                    intent.putExtra("result", result);
+                    startActivity(intent);
                 }
-//                showAllEvents();
             }
         });
 
@@ -114,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
             public void onLocationChanged(Location location) {
                 float signalAccuracy = location.getAccuracy();
                 setAccuracyProgressBarStatus(signalAccuracy);
-
+                goToLocation(location.getLatitude(), location.getLongitude(), DEFAULT_ZOOM);
 
                 if (runningState.equals("started")) {
                     TrackManager manager = TrackManager.getInstance();

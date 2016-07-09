@@ -17,9 +17,14 @@
     <string name="accuracyBadStatus">Bad</string>
     <string name="accuracyFatalStatus">Fatal</string>
     <string name="title_activity_finalize_run">FinalizeRunActivity</string>
-    <string name="hello_round">Hello Round World!</string>
-    <string name="hello_square">Hello Square World!</string>
 
+    <!-- Main Menu -->
+    <string name="goRunningLabel">GO RUNNING</string>
+    <string name="statisticsLabel">STATISTICS</string>
+    <string name="settingsLabel">SETTINGS</string>
+
+
+    <!-- Saving result -->
     <string name="timeLabel">Time:</string>
     <string name="avgSpeedLabel">Averange Speed:</string>
     <string name="distanceLabel">Distance:</string>
@@ -27,4 +32,6 @@
 
     <string name="saveButton">SAVE</string>
     <string name="deleteButton">DELETE</string>
+
+
 </resources>

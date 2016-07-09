@@ -29,7 +29,7 @@
             android:value="AIzaSyCzF9N-XV_j9HgHbBfWo9dH6a1zv7ryp0Y" />
 
         <activity
-            android:name=".run_keeper.MainActivity"
+            android:name=".main_menu.MainMenuActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,14 +38,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".finalize_result.FinalizeRunActivity"
-            android:label="@string/title_activity_finalize_run">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:name=".running.TrackerActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".running.processing_result.FinalizeRunActivity"
+            android:label="@string/title_activity_finalize_run"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".statistics.ResultsPresentationActivity"></activity>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.example.valverde.valverderunkeeper.run_keeper;
+package com.example.valverde.valverderunkeeper.running;
 
 import android.os.Handler;
 import android.widget.TextView;
@@ -11,6 +11,7 @@ public class TimerThread extends Thread {
     private boolean running = false;
     private boolean paused = false;
     private long pauseTime = 0;
+    private long overallTime = 0;
     private TextView timeField;
     private Handler handler;
 
@@ -32,7 +33,8 @@ public class TimerThread extends Thread {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        String timeString = getTimeInFormat(timeElapsedInMillis - getPausedTime());
+                        overallTime = timeElapsedInMillis - getPausedTime();
+                        String timeString = getTimeInFormat(overallTime);
                         if (running) timeField.setText(timeString);
                     }
                 });
@@ -45,7 +47,7 @@ public class TimerThread extends Thread {
     }
 
 
-    private String getTimeInFormat(long elapsedTime) {
+    public static String getTimeInFormat(long elapsedTime) {
         String hours = Long.toString(elapsedTime / HOUR_FACTOR);
         elapsedTime %= HOUR_FACTOR;
         String minutes = getMinutes(elapsedTime);
@@ -55,24 +57,26 @@ public class TimerThread extends Thread {
     }
 
 
-    private String getMinutes(long time) {
+    private static String getMinutes(long time) {
         int minutes = (int)time / MINUTE_FACTOR;
         if (minutes < 10) return "0"+minutes;
         else return Integer.toString(minutes);
     }
 
 
-    private String getSeconds(long time) {
+    private static String getSeconds(long time) {
         int seconds = (int)time / SECOND_FACTOR;
         if (seconds < 10) return "0"+seconds;
         else return Integer.toString(seconds);
     }
 
-
     public long getPausedTime() {
         return pauseTime;
     }
 
+    public long getOverallTime() {
+        return overallTime;
+    }
 
     private long checkIfIsPaused(long time) {
         synchronized (lock) {

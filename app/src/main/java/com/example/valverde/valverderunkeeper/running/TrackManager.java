@@ -1,6 +1,4 @@
-package com.example.valverde.valverderunkeeper.run_keeper;
-
-import android.util.Log;
+package com.example.valverde.valverderunkeeper.running;
 
 import java.util.ArrayList;
 
@@ -8,14 +6,17 @@ public class TrackManager {
     private static final int AMOUNT_OF_EVENT_IN_AVERANGE_SPEED = 4;
     private static final double MAX_UPPER_CHANGE_BETWEEN_EVENTS = 6.0;
     private static final double MAX_LOWER_CHANGE_BETWEEN_EVENTS = 10.0;
-    private static final double MAX_CHANGE_INCREASE_PER_MEASURE = 0.5;
+    private static final double MAX_CHANGE_INCREASE_PER_MEASURE = 5.0;
     private double upperChangeFactor = 0.0, lowerChangeFactor = 0.0;
+    private static final int EVENTS_PER_POINT_ON_ROUTE_MAP = 3;
+    private static final float GPS_ACCURACY_LIMIT = 40.f;
     private static final double HOUR_FACTOR = 3600000.0;
     private static volatile TrackManager instance = null;
     private ArrayList<GPSEvent> route = new ArrayList<>();
     private ArrayList<GPSEvent> actualGPSEvents = new ArrayList<>();
     private double overallDistance = 0.0;
     private double lastKnownSpeed = 0.0;
+    private int eventsCounter = 0;
 
 
     private TrackManager() {}
@@ -41,12 +42,13 @@ public class TrackManager {
                 newEvent.getLat(), newEvent.getLng());
         long timeBetweenEvents = newEvent.getTime() - lastEvent.getTime();
         double speedBetweenEvents = getSpeedBetweenEvents(distanceBetweenEvents, timeBetweenEvents);
-        if (iSSpeedMeasureGood(speedBetweenEvents) && newEvent.getAccuracy() <= 30.0f) {
+        if (iSSpeedMeasureGood(speedBetweenEvents) && newEvent.getAccuracy() <= GPS_ACCURACY_LIMIT) {
             if (actualGPSEvents.size() >= AMOUNT_OF_EVENT_IN_AVERANGE_SPEED)
                 actualGPSEvents.remove(0);
 
             actualGPSEvents.add(newEvent);
-            route.add(newEvent);
+            if (eventsCounter++ % EVENTS_PER_POINT_ON_ROUTE_MAP == 0)
+                route.add(newEvent);
             double travelDistance = 0.0;
             for (int i = 0; i < actualGPSEvents.size() - 1; i++) {
                 GPSEvent earlierEvent = actualGPSEvents.get(i);
@@ -65,6 +67,15 @@ public class TrackManager {
         }
         else
             return lastKnownSpeed;
+    }
+
+    public void addLastEventToRoute() {
+        if (actualGPSEvents.size() > 0 && route.size() > 0) {
+            GPSEvent lastEvent = actualGPSEvents.get(actualGPSEvents.size() - 1);
+            GPSEvent lastEventInRoute = route.get(route.size() - 1);
+            if (!lastEvent.equals(lastEventInRoute))
+                route.add(lastEvent);
+        }
     }
 
     private boolean iSSpeedMeasureGood(double speedBetweenTwoEvents) {
@@ -90,6 +101,10 @@ public class TrackManager {
         upperChangeFactor += MAX_CHANGE_INCREASE_PER_MEASURE;
         lowerChangeFactor += MAX_CHANGE_INCREASE_PER_MEASURE;
         return false;
+    }
+
+    public ArrayList<GPSEvent> getRoute() {
+        return route;
     }
 
     private double getSpeedBetweenEvents(double distanceBetween, long timeBetween) {

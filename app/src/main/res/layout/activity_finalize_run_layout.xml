@@ -5,13 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="100"
-    tools:context=".finalize_result.FinalizeRunActivity">
+    tools:context=".running.processing_result.FinalizeRunActivity">
 
-    <fragment android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_weight="95"
-        android:layout_width="match_parent"
-        android:layout_height="0dp" />
 
     <GridLayout android:id="@+id/educationGridLayout"
         android:columnCount="2"
@@ -29,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <TextView android:id="@id/timeField"
+        <TextView android:id="@+id/timeField"
             style="@style/statisticsFont"
             android:text="4"
             android:layout_width="wrap_content"
@@ -73,7 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <TextView android:id="@+id/caloriedField"
+        <TextView android:id="@+id/caloriesField"
             style="@style/statisticsFont"
             android:text="4"
             android:layout_width="wrap_content"

@@ -1,6 +1,7 @@
-package com.example.valverde.valverderunkeeper.run_keeper;
+package com.example.valverde.valverderunkeeper.running;
 
 public class GPSEvent {
+    private long id;
     private long time;
     private double lat;
     private double lng;
@@ -11,6 +12,14 @@ public class GPSEvent {
         this.lat = lat;
         this.lng = lng;
         this.accuracy = accuracy;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getTime() {
