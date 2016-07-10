@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="100"
+    android:background="@color/lightGreen"
     tools:context=".running.TrackerActivity">
 
 
@@ -25,13 +26,14 @@
             android:text="@string/accuracyInitStatus"
             android:textSize="20sp"
             android:layout_marginStart="10dp"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
 
 
     <fragment android:id="@+id/map"
-        android:layout_weight="100"
+        android:layout_weight="90"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp" />
@@ -40,6 +42,8 @@
     <TextView android:id="@+id/timeField"
         android:text="@string/initTimeText"
         android:textSize="50sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -49,11 +53,14 @@
         android:paddingEnd="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal" >
 
         <TextView android:id="@+id/distanceField"
             android:text="@string/initDistanceText"
             android:textSize="30sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
             android:layout_gravity="left"
             android:layout_width="130dp"
             android:layout_height="wrap_content" />
@@ -66,6 +73,8 @@
         <TextView android:id="@+id/speedField"
             android:text="@string/initSpeedText"
             android:textSize="30sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
             android:layout_gravity="left"
             android:layout_weight="1"
             android:layout_width="130dp"
@@ -77,12 +86,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="50dp"
+        android:layout_marginTop="15dp"
         android:paddingEnd="50dp"
         android:orientation="horizontal" >
 
         <Button android:id="@+id/stopButton"
             android:text="@string/stopButton"
-            android:textSize="25sp"
+            style="@style/tinyButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -93,7 +103,7 @@
 
         <Button android:id="@+id/startButton"
             android:text="@string/startButton"
-            android:textSize="25sp"
+            style="@style/tinyButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

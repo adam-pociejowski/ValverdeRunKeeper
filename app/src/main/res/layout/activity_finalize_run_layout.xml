@@ -4,8 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="100"
+    android:background="@color/lightGreen"
     tools:context=".running.processing_result.FinalizeRunActivity">
+
+    <TextView
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:textSize="50sp"
+        android:textStyle="bold"
+        android:textColor="@color/darkGreen"
+        android:text="@string/newResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_weight="20"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
 
 
     <GridLayout android:id="@+id/educationGridLayout"
@@ -20,13 +35,12 @@
             style="@style/statisticsFont"
             android:text="@string/timeLabel"
             android:layout_marginStart="0dp"
-            android:layout_marginEnd="40dp"
+            android:layout_marginEnd="60dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView android:id="@+id/timeField"
             style="@style/statisticsFont"
-            android:text="4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -35,13 +49,12 @@
             style="@style/statisticsFont"
             android:text="@string/avgSpeedLabel"
             android:layout_marginStart="0dp"
-            android:layout_marginEnd="40dp"
+            android:layout_marginEnd="60dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView android:id="@+id/avgSpeedField"
             style="@style/statisticsFont"
-            android:text="4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -50,13 +63,12 @@
             style="@style/statisticsFont"
             android:text="@string/distanceLabel"
             android:layout_marginStart="0dp"
-            android:layout_marginEnd="40dp"
+            android:layout_marginEnd="60dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView android:id="@+id/distanceField"
             style="@style/statisticsFont"
-            android:text="4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -64,13 +76,12 @@
             style="@style/statisticsFont"
             android:text="@string/caloriesLabel"
             android:layout_marginStart="0dp"
-            android:layout_marginEnd="40dp"
+            android:layout_marginEnd="60dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView android:id="@+id/caloriesField"
             style="@style/statisticsFont"
-            android:text="4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </GridLayout>
@@ -80,11 +91,12 @@
         android:orientation="horizontal"
         android:weightSum="10"
         android:layout_marginTop="10dp"
+        android:layout_weight="5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <Button android:id="@+id/saveButton"
-            style="@style/statisticsFont"
+            style="@style/tinyButtonStyle"
             android:text="@string/saveButton"
             android:layout_weight="3"
             android:layout_width="wrap_content"
@@ -96,7 +108,7 @@
             android:layout_weight="4" />
 
         <Button android:id="@+id/deleteButton"
-            style="@style/statisticsFont"
+            style="@style/tinyButtonStyle"
             android:text="@string/deleteButton"
             android:layout_weight="3"
             android:layout_width="wrap_content"

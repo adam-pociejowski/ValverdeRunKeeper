@@ -29,6 +29,7 @@
     <string name="avgSpeedLabel">Averange Speed:</string>
     <string name="distanceLabel">Distance:</string>
     <string name="caloriesLabel">Calories:</string>
+    <string name="newResult">New Result</string>
 
     <string name="saveButton">SAVE</string>
     <string name="deleteButton">DELETE</string>

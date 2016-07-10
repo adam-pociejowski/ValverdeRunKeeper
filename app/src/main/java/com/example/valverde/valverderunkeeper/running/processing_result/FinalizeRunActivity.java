@@ -13,13 +13,9 @@ import com.example.valverde.valverderunkeeper.data.DatabaseResult;
 import com.example.valverde.valverderunkeeper.main_menu.MainMenuActivity;
 import com.example.valverde.valverderunkeeper.running.GPSEvent;
 import com.example.valverde.valverderunkeeper.running.Timer;
-
-import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -68,7 +64,6 @@ public class FinalizeRunActivity extends Activity {
 
     private void showAllResults(DatabaseResult db) {
         ArrayList<RunResult> results = db.getAllResults();
-
         for (RunResult r : results) {
             Log.d("RunResults", "Time: "+r.getTime()+" | AVG: "+r.getAvgSpeed()+" | Distance: "+r.getDistance());
         }

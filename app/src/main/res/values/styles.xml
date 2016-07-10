@@ -14,7 +14,7 @@
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingBottom">5dp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">28sp</item>
     </style>
 
     <style name="mainMenuButtonStyle" parent="@android:style/TextAppearance.Medium">
@@ -23,6 +23,15 @@
         <item name="android:padding">10dp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">26sp</item>
+        <item name="android:background">@color/green</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="tinyButtonStyle" parent="@android:style/TextAppearance.Medium">
+        <item name="android:padding">10dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">24sp</item>
         <item name="android:background">@color/green</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:layout_gravity">center</item>
