@@ -8,6 +8,8 @@
     <string name="initTimeText">0:00:00</string>
     <string name="speedUnits">km/h</string>
     <string name="distanceUnits">km</string>
+    <string name="gpsAccuracyUnits">m</string>
+    <string name="gpsTimeUnits">sec</string>
 
     <string name="accuracyInitStatus">None</string>
     <string name="accuracyExcellentStatus">Excellent</string>
@@ -41,5 +43,14 @@
     <string name="presentationTimeLabel">Time</string>
     <string name="presentationAVGSpeedLabel">Speed</string>
 
-
+    <!-- Settings -->
+    <string name="appSettingsLabel">Application Settings</string>
+    <string name="gpsAccuracy">Gps accuracy:</string>
+    <string name="gpsEventsRefreshTime">Gps refresh:</string>
+    <string name="gpsDefaultMapZoom">Default map zoom:</string>
+    <string name="gpsAmountOfEventsInAvgSpeed">Events in avg speed:</string>
+    <string name="gpsMaxUpperChangeBetweenEvents">Max upper change:</string>
+    <string name="gpsMaxLowerChangeBetweenEvents">Max lower change:</string>
+    <string name="gpsChangeIncreasePerMeasure">Change factor:</string>
+    <string name="gpsSaveSettingsButton">Save settings</string>
 </resources>

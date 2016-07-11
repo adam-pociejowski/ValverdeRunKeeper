@@ -1,6 +1,8 @@
 package com.example.valverde.valverderunkeeper.running;
 
-public class GPSEvent {
+import java.io.Serializable;
+
+public class GPSEvent implements Serializable {
     private long id;
     private long time;
     private double lat;

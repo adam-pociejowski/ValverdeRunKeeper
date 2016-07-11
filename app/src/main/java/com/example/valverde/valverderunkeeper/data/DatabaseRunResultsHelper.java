@@ -11,7 +11,7 @@ import com.example.valverde.valverderunkeeper.running.processing_result.RunResul
 
 import java.util.ArrayList;
 
-public class DatabaseResult extends SQLiteOpenHelper {
+public class DatabaseRunResultsHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "valverdeRunKeeper.db";
     private static final int VERSION = 1;
     private static final String TABLE_NAME = "results";
@@ -28,7 +28,7 @@ public class DatabaseResult extends SQLiteOpenHelper {
             DATE_COL+" INTEGER)";
     public static final String SQL_DROP_QUERY = "DROP TABLE IF EXISTS "+TABLE_NAME;
 
-    public DatabaseResult(Context context) {
+    public DatabaseRunResultsHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
     }
 

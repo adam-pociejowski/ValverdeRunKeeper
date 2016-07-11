@@ -3,7 +3,6 @@ package com.example.valverde.valverderunkeeper.statistics;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.example.valverde.valverderunkeeper.R;
-import com.example.valverde.valverderunkeeper.data.DatabaseResult;
+import com.example.valverde.valverderunkeeper.data.DatabaseRunResultsHelper;
 import com.example.valverde.valverderunkeeper.running.Timer;
 import com.example.valverde.valverderunkeeper.running.processing_result.RunResult;
 
@@ -38,7 +37,7 @@ public class ResultsPresentationActivity extends AppCompatActivity {
     }
 
     private List<RunResult> getResultsFromDatabase() {
-        DatabaseResult db = new DatabaseResult(getApplicationContext());
+        DatabaseRunResultsHelper db = new DatabaseRunResultsHelper(getApplicationContext());
         return db.getAllResults();
     }
 

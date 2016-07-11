@@ -20,7 +20,6 @@ public class Timer extends Thread {
         this.timeField = timeField;
     }
 
-
     @Override
     public void run() {
         final int SLEEP_TIME = 10;
@@ -46,7 +45,6 @@ public class Timer extends Thread {
         }
     }
 
-
     public static String getTimeInFormat(long elapsedTime) {
         String hours = Long.toString(elapsedTime / HOUR_FACTOR);
         elapsedTime %= HOUR_FACTOR;
@@ -56,13 +54,11 @@ public class Timer extends Thread {
         return hours+":"+minutes+":"+seconds;
     }
 
-
     private static String getMinutes(long time) {
         int minutes = (int)time / MINUTE_FACTOR;
         if (minutes < 10) return "0"+minutes;
         else return Integer.toString(minutes);
     }
-
 
     private static String getSeconds(long time) {
         int seconds = (int)time / SECOND_FACTOR;
@@ -94,7 +90,6 @@ public class Timer extends Thread {
         return time;
     }
 
-
     public void pause() {
         paused = true;
     }
@@ -105,7 +100,6 @@ public class Timer extends Thread {
             lock.notify();
         }
     }
-
 
     public void setRunning(boolean running) {
         this.running = running;

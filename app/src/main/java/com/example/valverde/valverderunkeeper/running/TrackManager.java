@@ -9,7 +9,7 @@ public class TrackManager {
     private static final double MAX_CHANGE_INCREASE_PER_MEASURE = 5.0;
     private double upperChangeFactor = 0.0, lowerChangeFactor = 0.0;
     private static final int EVENTS_PER_POINT_ON_ROUTE_MAP = 3;
-    private static final float GPS_ACCURACY_LIMIT = 40.f;
+    private static final float GPS_ACCURACY_LIMIT = 30.f;
     private static final double HOUR_FACTOR = 3600000.0;
     private static volatile TrackManager instance = null;
     private ArrayList<GPSEvent> route = new ArrayList<>();
@@ -36,7 +36,6 @@ public class TrackManager {
             actualGPSEvents.add(newEvent);
             return  0.0;
         }
-
         GPSEvent lastEvent = actualGPSEvents.get(actualGPSEvents.size() - 1);
         double distanceBetweenEvents =  getDistanceInKm(lastEvent.getLat(), lastEvent.getLng(),
                 newEvent.getLat(), newEvent.getLng());
@@ -73,18 +72,18 @@ public class TrackManager {
         if (actualGPSEvents.size() > 0 && route.size() > 0) {
             GPSEvent lastEvent = actualGPSEvents.get(actualGPSEvents.size() - 1);
             GPSEvent lastEventInRoute = route.get(route.size() - 1);
-            if (!lastEvent.equals(lastEventInRoute))
+            if (lastEvent.getTime() != lastEventInRoute.getTime()) {
                 route.add(lastEvent);
+            }
         }
     }
 
     private boolean iSSpeedMeasureGood(double speedBetweenTwoEvents) {
         if (lastKnownSpeed == 0.0)
             return true;
-
         if (speedBetweenTwoEvents > lastKnownSpeed) { /* Much faster than before */
             if (speedBetweenTwoEvents - lastKnownSpeed <=
-                    MAX_UPPER_CHANGE_BETWEEN_EVENTS + upperChangeFactor) {
+                        MAX_UPPER_CHANGE_BETWEEN_EVENTS + upperChangeFactor) {
                 upperChangeFactor = 0.0;
                 lowerChangeFactor = 0.0;
                 return true;
@@ -92,7 +91,7 @@ public class TrackManager {
         }
         else { /* Much slower than before */
             if ((lastKnownSpeed - speedBetweenTwoEvents <=
-                    MAX_LOWER_CHANGE_BETWEEN_EVENTS + lowerChangeFactor)) {
+                        MAX_LOWER_CHANGE_BETWEEN_EVENTS + lowerChangeFactor)) {
                 upperChangeFactor = 0.0;
                 lowerChangeFactor = 0.0;
                 return true;

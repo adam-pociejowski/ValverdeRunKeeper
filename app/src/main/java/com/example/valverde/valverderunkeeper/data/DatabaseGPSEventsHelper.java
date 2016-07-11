@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.example.valverde.valverderunkeeper.running.GPSEvent;
 import java.util.ArrayList;
 
-public class DatabaseHelper extends SQLiteOpenHelper {
+public class DatabaseGPSEventsHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "valverdeRunKeeper.db";
     private static final int VERSION = 1;
     private static final String TABLE_NAME = "runningEvents";
@@ -28,7 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String SQL_DROP_QUERY = "DROP TABLE IF EXISTS "+TABLE_NAME;
 
 
-    public DatabaseHelper(Context context) {
+    public DatabaseGPSEventsHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
     }
 

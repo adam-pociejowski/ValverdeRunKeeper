@@ -8,8 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import com.example.valverde.valverderunkeeper.R;
-import com.example.valverde.valverderunkeeper.data.DatabaseHelper;
-import com.example.valverde.valverderunkeeper.data.DatabaseResult;
+import com.example.valverde.valverderunkeeper.data.DatabaseGPSEventsHelper;
+import com.example.valverde.valverderunkeeper.data.DatabaseRunResultsHelper;
 import com.example.valverde.valverderunkeeper.main_menu.MainMenuActivity;
 import com.example.valverde.valverderunkeeper.running.GPSEvent;
 import com.example.valverde.valverderunkeeper.running.Timer;
@@ -33,9 +33,9 @@ public class FinalizeRunActivity extends Activity {
         setContentView(R.layout.activity_finalize_run_layout);
         ButterKnife.bind(this);
         Intent intent = getIntent();
-        final DatabaseResult db = new DatabaseResult(this);
+        final DatabaseRunResultsHelper db = new DatabaseRunResultsHelper(this);
 //        db.onUpgrade(db.getWritableDatabase(), 1, 1);
-        DatabaseHelper dh = new DatabaseHelper(this);
+        DatabaseGPSEventsHelper dh = new DatabaseGPSEventsHelper(this);
 
         final RunResult result = (RunResult) intent.getSerializableExtra("result");
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
@@ -54,7 +54,8 @@ public class FinalizeRunActivity extends Activity {
             public void onClick(View view) {
                 Date date = new Date();
                 result.setDate(date.getTime());
-                db.insertResult(result);
+//                db.insertResult(result);
+                showAllEvents(result.getRoute());
                 showAllResults(db);
                 Intent i = new Intent(getApplicationContext(), MainMenuActivity.class);
                 startActivity(i);
@@ -62,7 +63,7 @@ public class FinalizeRunActivity extends Activity {
         });
     }
 
-    private void showAllResults(DatabaseResult db) {
+    private void showAllResults(DatabaseRunResultsHelper db) {
         ArrayList<RunResult> results = db.getAllResults();
         for (RunResult r : results) {
             Log.d("RunResults", "Time: "+r.getTime()+" | AVG: "+r.getAvgSpeed()+" | Distance: "+r.getDistance());
@@ -70,8 +71,7 @@ public class FinalizeRunActivity extends Activity {
     }
 
 
-    private void showAllEvents(DatabaseHelper databaseHelper) {
-        ArrayList<GPSEvent> events = databaseHelper.getAllEvents();
+    private void showAllEvents(ArrayList<GPSEvent> events) {
         for (GPSEvent e : events) {
             Log.d("SPEED", "ID: "+e.getId()+" |  ACCURACY: "+e.getAccuracy()+
                     " | LAT: "+e.getLat()+" | LNG: "+e.getLng());

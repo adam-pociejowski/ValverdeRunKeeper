@@ -7,12 +7,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import com.example.valverde.valverderunkeeper.R;
-import com.example.valverde.valverderunkeeper.data.DatabaseResult;
 import com.example.valverde.valverderunkeeper.running.TrackerActivity;
-import com.example.valverde.valverderunkeeper.running.processing_result.RunResult;
+import com.example.valverde.valverderunkeeper.settings.Settings;
+import com.example.valverde.valverderunkeeper.settings.SettingsActivity;
+import com.example.valverde.valverderunkeeper.settings.SettingsManager;
 import com.example.valverde.valverderunkeeper.statistics.ResultsPresentationActivity;
-
-import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,7 +46,8 @@ public class MainMenuActivity extends AppCompatActivity {
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(intent);
             }
         });
     }

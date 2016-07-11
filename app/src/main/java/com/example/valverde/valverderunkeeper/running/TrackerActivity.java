@@ -1,5 +1,6 @@
 package com.example.valverde.valverderunkeeper.running;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,6 +11,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,9 +20,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.valverde.valverderunkeeper.R;
-import com.example.valverde.valverderunkeeper.data.DatabaseHelper;
 import com.example.valverde.valverderunkeeper.running.processing_result.FinalizeRunActivity;
 import com.example.valverde.valverderunkeeper.running.processing_result.RunResult;
 import com.google.android.gms.common.ConnectionResult;
@@ -30,12 +30,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -45,9 +42,10 @@ public class TrackerActivity extends AppCompatActivity {
     private static final int EVENTS_REFRESH_TIME_IN_SECONDS = 3;
     private static final float DEFAULT_ZOOM = 16;
     private Handler handler = new Handler();
-    private DatabaseHelper databaseHelper;
     private String runningState = "init";
     private PolylineOptions polylineOptions = new PolylineOptions();
+    private LocationManager locationManager;
+    private LocationListener locationListener;
     private Timer timerThread;
     private GoogleMap map;
     @BindView(R.id.accuracyProgressBar) ProgressBar accuracyProgressBar;
@@ -64,8 +62,9 @@ public class TrackerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        databaseHelper = new DatabaseHelper(this);
-//        databaseHelper.onUpgrade(databaseHelper.getWritableDatabase(), 1, 1);
+        int progressBarColor = getResources().getColor(R.color.darkGreen);
+        accuracyProgressBar.getProgressDrawable().setColorFilter(progressBarColor,
+                android.graphics.PorterDuff.Mode.SRC_IN);
 
         polylineOptions.color(Color.BLUE);
         if (isServicesAvailable()) {
@@ -73,8 +72,7 @@ public class TrackerActivity extends AppCompatActivity {
             if (initMap()) {
                 Log.i("D", "Map is ready to use");
                 goToLocation(INIT_LAT, INIT_LNG, DEFAULT_ZOOM);
-            }
-            else
+            } else
                 Log.i("D", "Map is not available");
         }
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -85,13 +83,11 @@ public class TrackerActivity extends AppCompatActivity {
                     timerThread.start();
                     runningState = "started";
                     startButton.setText(getString(R.string.pauseButton));
-                }
-                else if (runningState.equals("started")) {
+                } else if (runningState.equals("started")) {
                     timerThread.pause();
                     runningState = "paused";
                     startButton.setText(getString(R.string.startButton));
-                }
-                else if (runningState.equals("paused")) {
+                } else if (runningState.equals("paused")) {
                     timerThread.unpause();
                     runningState = "started";
                     startButton.setText(getString(R.string.pauseButton));
@@ -109,8 +105,15 @@ public class TrackerActivity extends AppCompatActivity {
                     long overallTime = timerThread.getOverallTime();
                     ArrayList<GPSEvent> route = manager.getRoute();
                     RunResult result = new RunResult(overallTime, distance, 0);
-                    Log.d("RESULT", "time: "+overallTime+" | distance: "+distance);
+                    result.setRoute(route);
                     timerThread = null;
+                    if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+                                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                                ActivityCompat.checkSelfPermission(getApplicationContext(),
+                                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        locationManager.removeUpdates(locationListener);
+                    }
+
                     Intent intent = new Intent(getApplicationContext(), FinalizeRunActivity.class);
                     intent.putExtra("result", result);
                     startActivity(intent);
@@ -118,8 +121,8 @@ public class TrackerActivity extends AppCompatActivity {
             }
         });
 
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        LocationListener locationListener = new LocationListener() {
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 float signalAccuracy = location.getAccuracy();
@@ -128,7 +131,6 @@ public class TrackerActivity extends AppCompatActivity {
 
                 if (runningState.equals("started")) {
                     TrackManager manager = TrackManager.getInstance();
-
                     GPSEvent gpsEvent = new GPSEvent(System.currentTimeMillis(), location.getLatitude(),
                             location.getLongitude(), location.getAccuracy());
                     double averangeSpeed = manager.getAverangeSpeedInKmH(gpsEvent);
@@ -144,7 +146,7 @@ public class TrackerActivity extends AppCompatActivity {
                     map.addPolyline(polylineOptions);
 
                     /*** DEBUG ****/
-                    Log.d("SPEED", "LAT: "+location.getLatitude()+"|  LNG: "+location.getLongitude()+
+                    Log.d("TrackerActivity", "LAT: "+location.getLatitude()+"|  LNG: "+location.getLongitude()+
                             "  |  SPEED: "+averangeSpeedInFormat+" km/h  |  ACCURACY: "+signalAccuracy);
                 }
             }
@@ -170,7 +172,6 @@ public class TrackerActivity extends AppCompatActivity {
         else locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                             EVENTS_REFRESH_TIME_IN_SECONDS*1000, 0, locationListener);
     }
-
 
     private void setAccuracyProgressBarStatus(float signalAccuracy) {
         if (signalAccuracy <= 3.5) {
@@ -202,7 +203,6 @@ public class TrackerActivity extends AppCompatActivity {
         }
     }
 
-
     private boolean isServicesAvailable() {
         int isAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if(isAvailable == ConnectionResult.SUCCESS) return true;
@@ -214,7 +214,6 @@ public class TrackerActivity extends AppCompatActivity {
         return false;
     }
 
-
     private boolean initMap() {
         if (map == null) {
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -223,48 +222,9 @@ public class TrackerActivity extends AppCompatActivity {
         return (map != null);
     }
 
-
     private void goToLocation(double latitude, double longtitude, float zoom) {
         LatLng ll = new LatLng(latitude, longtitude);
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, zoom);
         map.moveCamera(update);
-    }
-
-    private void showAllEvents() {
-        ArrayList<GPSEvent> events = databaseHelper.getAllEvents();
-        TrackManager manager = TrackManager.getInstance();
-        Log.d("events", events.size()+" events amount");
-        PolylineOptions polylineOptions = new PolylineOptions();
-        String averangeSpeedInFormat = "";
-        String overallDistanceInFormat = "";
-        double lastSpeed = 0.0;
-        int i = 0;
-        for (GPSEvent event : events) {
-            if (i % EVENTS_REFRESH_TIME_IN_SECONDS == 0) {
-                double averangeSpeed = manager.getAverangeSpeedInKmH(event);
-                double overallDistance = manager.getOverallDistance();
-                DecimalFormat decimalFormat = new DecimalFormat("#.##");
-                averangeSpeedInFormat = decimalFormat.format(averangeSpeed)+
-                                        " "+getString(R.string.speedUnits);
-                overallDistanceInFormat = decimalFormat.format(overallDistance)+
-                                        " "+getString(R.string.distanceUnits);
-                speedField.setText(averangeSpeedInFormat);
-                distanceField.setText(overallDistanceInFormat);
-                if (lastSpeed == averangeSpeed)
-                    map.addMarker(new MarkerOptions().position(new LatLng(event.getLat(), event.getLng())));
-
-                polylineOptions.color(Color.BLUE);
-                polylineOptions.add(new LatLng(event.getLat(), event.getLng()));
-                lastSpeed = averangeSpeed;
-
-
-                /*** DEBUG ****/
-                Log.d("SPEED", "ID: "+i/EVENTS_REFRESH_TIME_IN_SECONDS+" | SPEED: "+
-                        averangeSpeedInFormat+" km/h  |  ACCURACY: "+event.getAccuracy()+
-                        " | DISTANCE: "+overallDistanceInFormat);
-            }
-            i++;
-        }
-        map.addPolyline(polylineOptions);
     }
 }

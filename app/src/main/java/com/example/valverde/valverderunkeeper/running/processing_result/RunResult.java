@@ -1,13 +1,16 @@
 package com.example.valverde.valverderunkeeper.running.processing_result;
 
+import com.example.valverde.valverderunkeeper.running.GPSEvent;
+
 import java.io.Serializable;
-import java.util.Date;
+import java.util.ArrayList;
 
 public class RunResult implements Serializable {
     private long time;
     private double distance;
     private int calories;
     private long date;
+    private ArrayList<GPSEvent> route;
 
     public RunResult(long time, double distance, int calories) {
         this.time = time;
@@ -37,5 +40,13 @@ public class RunResult implements Serializable {
 
     public double getAvgSpeed() {
         return distance / (time / 3600000.0);
+    }
+
+    public ArrayList<GPSEvent> getRoute() {
+        return route;
+    }
+
+    public void setRoute(ArrayList<GPSEvent> route) {
+        this.route = route;
     }
 }
