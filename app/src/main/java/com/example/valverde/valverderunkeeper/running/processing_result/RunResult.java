@@ -49,4 +49,12 @@ public class RunResult implements Serializable {
     public void setRoute(ArrayList<GPSEvent> route) {
         this.route = route;
     }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
 }

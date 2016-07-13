@@ -1,25 +1,28 @@
 package com.example.valverde.valverderunkeeper.running;
 
+import com.example.valverde.valverderunkeeper.settings.Settings;
+import com.example.valverde.valverderunkeeper.settings.SettingsManager;
+
 import java.util.ArrayList;
 
 public class TrackManager {
-    private static final int AMOUNT_OF_EVENT_IN_AVERANGE_SPEED = 4;
-    private static final double MAX_UPPER_CHANGE_BETWEEN_EVENTS = 6.0;
-    private static final double MAX_LOWER_CHANGE_BETWEEN_EVENTS = 10.0;
-    private static final double MAX_CHANGE_INCREASE_PER_MEASURE = 5.0;
     private double upperChangeFactor = 0.0, lowerChangeFactor = 0.0;
     private static final int EVENTS_PER_POINT_ON_ROUTE_MAP = 3;
-    private static final float GPS_ACCURACY_LIMIT = 30.f;
     private static final double HOUR_FACTOR = 3600000.0;
     private static volatile TrackManager instance = null;
     private ArrayList<GPSEvent> route = new ArrayList<>();
     private ArrayList<GPSEvent> actualGPSEvents = new ArrayList<>();
+    private static Settings settings;
     private double overallDistance = 0.0;
     private double lastKnownSpeed = 0.0;
     private int eventsCounter = 0;
 
 
     private TrackManager() {}
+
+    public static void setSettings(Settings s) {
+        settings = s;
+    }
 
     public double getDistanceInKm(double lat1, double lng1, double lat2, double lng2) {
         double factor = Math.PI / 180.0;
@@ -41,8 +44,8 @@ public class TrackManager {
                 newEvent.getLat(), newEvent.getLng());
         long timeBetweenEvents = newEvent.getTime() - lastEvent.getTime();
         double speedBetweenEvents = getSpeedBetweenEvents(distanceBetweenEvents, timeBetweenEvents);
-        if (iSSpeedMeasureGood(speedBetweenEvents) && newEvent.getAccuracy() <= GPS_ACCURACY_LIMIT) {
-            if (actualGPSEvents.size() >= AMOUNT_OF_EVENT_IN_AVERANGE_SPEED)
+        if (iSSpeedMeasureGood(speedBetweenEvents) && newEvent.getAccuracy() <= settings.getGpsAccuracyLimit()) {
+            if (actualGPSEvents.size() >= settings.getAmountOfEventsInAverangeSpeed())
                 actualGPSEvents.remove(0);
 
             actualGPSEvents.add(newEvent);
@@ -83,7 +86,7 @@ public class TrackManager {
             return true;
         if (speedBetweenTwoEvents > lastKnownSpeed) { /* Much faster than before */
             if (speedBetweenTwoEvents - lastKnownSpeed <=
-                        MAX_UPPER_CHANGE_BETWEEN_EVENTS + upperChangeFactor) {
+                        settings.getMaxUpperChangeBetweenEvents() + upperChangeFactor) {
                 upperChangeFactor = 0.0;
                 lowerChangeFactor = 0.0;
                 return true;
@@ -91,14 +94,14 @@ public class TrackManager {
         }
         else { /* Much slower than before */
             if ((lastKnownSpeed - speedBetweenTwoEvents <=
-                        MAX_LOWER_CHANGE_BETWEEN_EVENTS + lowerChangeFactor)) {
+                        settings.getMaxLowerChangeBetweenEvents() + lowerChangeFactor)) {
                 upperChangeFactor = 0.0;
                 lowerChangeFactor = 0.0;
                 return true;
             }
         }
-        upperChangeFactor += MAX_CHANGE_INCREASE_PER_MEASURE;
-        lowerChangeFactor += MAX_CHANGE_INCREASE_PER_MEASURE;
+        upperChangeFactor += settings.getMaxChangeIncreasePerMeasure();
+        lowerChangeFactor += settings.getMaxChangeIncreasePerMeasure();
         return false;
     }
 

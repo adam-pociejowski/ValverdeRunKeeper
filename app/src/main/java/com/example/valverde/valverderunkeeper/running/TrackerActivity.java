@@ -21,8 +21,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.valverde.valverderunkeeper.R;
+import com.example.valverde.valverderunkeeper.notification.RunningSpeaker;
+import com.example.valverde.valverderunkeeper.notification.SpeakingManager;
 import com.example.valverde.valverderunkeeper.running.processing_result.FinalizeRunActivity;
 import com.example.valverde.valverderunkeeper.running.processing_result.RunResult;
+import com.example.valverde.valverderunkeeper.settings.SettingsManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
@@ -39,14 +42,14 @@ import butterknife.ButterKnife;
 public class TrackerActivity extends AppCompatActivity {
     private static final double INIT_LAT = 50.79829564, INIT_LNG = 16.25238182;
     private static final int GPS_ERROR_DIALOG_REQUEST = 9001;
-    private static final int EVENTS_REFRESH_TIME_IN_SECONDS = 3;
-    private static final float DEFAULT_ZOOM = 16;
-    private Handler handler = new Handler();
-    private String runningState = "init";
+    private com.example.valverde.valverderunkeeper.settings.Settings settings;
     private PolylineOptions polylineOptions = new PolylineOptions();
     private LocationManager locationManager;
     private LocationListener locationListener;
+    private SpeakingManager speakingManager;
+    private String runningState = "init";
     private Timer timerThread;
+    private Handler handler;
     private GoogleMap map;
     @BindView(R.id.accuracyProgressBar) ProgressBar accuracyProgressBar;
     @BindView(R.id.speedField) TextView speedField;
@@ -62,16 +65,24 @@ public class TrackerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        handler = new Handler();
+        settings = SettingsManager.getSettings(this);
+        TrackManager.setSettings(settings);
         int progressBarColor = getResources().getColor(R.color.darkGreen);
         accuracyProgressBar.getProgressDrawable().setColorFilter(progressBarColor,
                 android.graphics.PorterDuff.Mode.SRC_IN);
+        if (settings.getSoundNotifications()) {
+            speakingManager = new RunningSpeaker(this);
+            speakingManager.setDistanceNotifyInterval(settings.getSoundNotificationDistanceInterval());
+        }
+
 
         polylineOptions.color(Color.BLUE);
         if (isServicesAvailable()) {
             Log.i("D", "Services are available");
             if (initMap()) {
                 Log.i("D", "Map is ready to use");
-                goToLocation(INIT_LAT, INIT_LNG, DEFAULT_ZOOM);
+                goToLocation(INIT_LAT, INIT_LNG, settings.getDefaultZoom());
             } else
                 Log.i("D", "Map is not available");
         }
@@ -113,7 +124,6 @@ public class TrackerActivity extends AppCompatActivity {
                                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         locationManager.removeUpdates(locationListener);
                     }
-
                     Intent intent = new Intent(getApplicationContext(), FinalizeRunActivity.class);
                     intent.putExtra("result", result);
                     startActivity(intent);
@@ -127,23 +137,26 @@ public class TrackerActivity extends AppCompatActivity {
             public void onLocationChanged(Location location) {
                 float signalAccuracy = location.getAccuracy();
                 setAccuracyProgressBarStatus(signalAccuracy);
-                goToLocation(location.getLatitude(), location.getLongitude(), DEFAULT_ZOOM);
+                goToLocation(location.getLatitude(), location.getLongitude(), settings.getDefaultZoom());
 
                 if (runningState.equals("started")) {
                     TrackManager manager = TrackManager.getInstance();
                     GPSEvent gpsEvent = new GPSEvent(System.currentTimeMillis(), location.getLatitude(),
                             location.getLongitude(), location.getAccuracy());
                     double averangeSpeed = manager.getAverangeSpeedInKmH(gpsEvent);
-                    double overallDistance = manager.getOverallDistance();
+                    double distance = manager.getOverallDistance();
                     DecimalFormat decimalFormat = new DecimalFormat("#.##");
                     String averangeSpeedInFormat = decimalFormat.format(averangeSpeed)+
                             " "+getString(R.string.speedUnits);
-                    String overallDistanceInFormat = decimalFormat.format(overallDistance)+
+                    String overallDistanceInFormat = decimalFormat.format(distance)+
                             " "+getString(R.string.distanceUnits);
                     speedField.setText(averangeSpeedInFormat);
                     distanceField.setText(overallDistanceInFormat);
                     polylineOptions.add(new LatLng(gpsEvent.getLat(), gpsEvent.getLng()));
                     map.addPolyline(polylineOptions);
+                    if (settings.getSoundNotifications()) {
+                        speakingManager.notifyDistance(distance);
+                    }
 
                     /*** DEBUG ****/
                     Log.d("TrackerActivity", "LAT: "+location.getLatitude()+"|  LNG: "+location.getLongitude()+
@@ -170,7 +183,7 @@ public class TrackerActivity extends AppCompatActivity {
             }
         }
         else locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                            EVENTS_REFRESH_TIME_IN_SECONDS*1000, 0, locationListener);
+                            settings.getEventsRefreshTimeInSeconds()*1000, 0, locationListener);
     }
 
     private void setAccuracyProgressBarStatus(float signalAccuracy) {
@@ -205,7 +218,7 @@ public class TrackerActivity extends AppCompatActivity {
 
     private boolean isServicesAvailable() {
         int isAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if(isAvailable == ConnectionResult.SUCCESS) return true;
+        if (isAvailable == ConnectionResult.SUCCESS) return true;
         else if (GooglePlayServicesUtil.isUserRecoverableError(isAvailable)) {
             Dialog dialog = GooglePlayServicesUtil.getErrorDialog(isAvailable, this, GPS_ERROR_DIALOG_REQUEST);
             dialog.show();

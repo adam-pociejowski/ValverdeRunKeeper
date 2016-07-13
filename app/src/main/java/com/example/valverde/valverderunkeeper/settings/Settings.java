@@ -8,6 +8,24 @@ public class Settings {
     private double maxLowerChangeBetweenEvents;
     private double maxChangeIncreasePerMeasure;
     private float gpsAccuracyLimit;
+    private boolean soundNotifications;
+    private double soundNotificationDistanceInterval;
+
+    public boolean getSoundNotifications() {
+        return soundNotifications;
+    }
+
+    public void setSoundNotifications(boolean soundNotifications) {
+        this.soundNotifications = soundNotifications;
+    }
+
+    public double getSoundNotificationDistanceInterval() {
+        return soundNotificationDistanceInterval;
+    }
+
+    public void setSoundNotificationDistanceInterval(double soundNotificationDistanceInterval) {
+        this.soundNotificationDistanceInterval = soundNotificationDistanceInterval;
+    }
 
     public float getDefaultZoom() {
         return defaultZoom;

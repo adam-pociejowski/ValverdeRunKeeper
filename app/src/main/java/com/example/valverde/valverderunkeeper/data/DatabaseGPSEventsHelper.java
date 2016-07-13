@@ -45,17 +45,17 @@ public class DatabaseGPSEventsHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public boolean insertData(GPSEvent event) {
+    public void insertData(ArrayList<GPSEvent> events) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_2, event.getId());
-        contentValues.put(COL_3, event.getTime());
-        contentValues.put(COL_4, event.getLat());
-        contentValues.put(COL_5, event.getLng());
-        contentValues.put(COL_6, event.getAccuracy());
-        long result = db.insert(TABLE_NAME, null, contentValues);
-        if (result == -1) return false;
-        else return true;
+        for (GPSEvent event : events) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(COL_2, event.getId());
+            contentValues.put(COL_3, event.getTime());
+            contentValues.put(COL_4, event.getLat());
+            contentValues.put(COL_5, event.getLng());
+            contentValues.put(COL_6, event.getAccuracy());
+            db.insert(TABLE_NAME, null, contentValues);
+        }
     }
 
 

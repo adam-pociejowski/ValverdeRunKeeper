@@ -18,14 +18,15 @@
         android:textSize="32sp"
         android:textStyle="bold"
         android:textColor="@color/darkGreen"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <ScrollView
+        android:layout_weight="20"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp">
 
         <LinearLayout
             android:orientation="vertical"
@@ -84,6 +85,47 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView android:text="@string/gpsSoundNotifications"
+                    style="@style/settingsFont"
+                    android:layout_weight="5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+
+                <CheckBox android:id="@+id/gpsNotificationCheckBox"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView android:id="@+id/gpsSoundNotificationsDistanceIntervalLabel"
+                    android:text="@string/gpsSoundNotificationsDistanceInterval"
+                    style="@style/settingsFont"
+                    android:layout_weight="5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+
+                <EditText android:id="@+id/gpsSoundNotificationsDistanceIntervalField"
+                    style="@style/settingsFont"
+                    android:layout_weight="2"
+                    android:gravity="end"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+
+                <TextView android:id="@+id/gpsSoundNotificationsDistanceIntervalUnitsField"
+                    android:text="@string/gpsAccuracyUnits"
+                    style="@style/settingsFont"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -207,10 +249,10 @@
     </ScrollView>
 
     <LinearLayout
-        android:layout_weight="2"
+        android:layout_marginTop="10dp"
         android:gravity="bottom"
         android:layout_width="match_parent"
-        android:layout_height="0dp">
+        android:layout_height="50dp">
 
         <Button android:id="@+id/settingsSaveButton"
             android:text="@string/gpsSaveSettingsButton"

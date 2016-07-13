@@ -9,6 +9,7 @@
     <string name="speedUnits">km/h</string>
     <string name="distanceUnits">km</string>
     <string name="gpsAccuracyUnits">m</string>
+    <string name="fullNameOfDistanceUnits">meters</string>
     <string name="gpsTimeUnits">sec</string>
 
     <string name="accuracyInitStatus">None</string>
@@ -32,6 +33,7 @@
     <string name="distanceLabel">Distance:</string>
     <string name="caloriesLabel">Calories:</string>
     <string name="newResult">New Result</string>
+    <string name="recordLabel">Record!</string>
 
     <string name="saveButton">SAVE</string>
     <string name="deleteButton">DELETE</string>
@@ -52,5 +54,7 @@
     <string name="gpsMaxUpperChangeBetweenEvents">Max upper change:</string>
     <string name="gpsMaxLowerChangeBetweenEvents">Max lower change:</string>
     <string name="gpsChangeIncreasePerMeasure">Change factor:</string>
+    <string name="gpsSoundNotifications">Sound notifications:</string>
+    <string name="gpsSoundNotificationsDistanceInterval">Distance interval:</string>
     <string name="gpsSaveSettingsButton">Save settings</string>
 </resources>

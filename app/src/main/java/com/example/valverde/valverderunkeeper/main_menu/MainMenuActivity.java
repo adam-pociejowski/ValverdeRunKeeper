@@ -3,16 +3,14 @@ package com.example.valverde.valverderunkeeper.main_menu;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import com.example.valverde.valverderunkeeper.R;
+import com.example.valverde.valverderunkeeper.notification.RunningSpeaker;
+import com.example.valverde.valverderunkeeper.notification.SpeakingManager;
 import com.example.valverde.valverderunkeeper.running.TrackerActivity;
-import com.example.valverde.valverderunkeeper.settings.Settings;
 import com.example.valverde.valverderunkeeper.settings.SettingsActivity;
-import com.example.valverde.valverderunkeeper.settings.SettingsManager;
 import com.example.valverde.valverderunkeeper.statistics.ResultsPresentationActivity;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
