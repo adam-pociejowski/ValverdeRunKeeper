@@ -6,11 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import com.example.valverde.valverderunkeeper.R;
-import com.example.valverde.valverderunkeeper.notification.RunningSpeaker;
-import com.example.valverde.valverderunkeeper.notification.SpeakingManager;
 import com.example.valverde.valverderunkeeper.running.TrackerActivity;
 import com.example.valverde.valverderunkeeper.settings.SettingsActivity;
-import com.example.valverde.valverderunkeeper.statistics.ResultsPresentationActivity;
+import com.example.valverde.valverderunkeeper.statistics.ResultsListActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -36,7 +34,7 @@ public class MainMenuActivity extends AppCompatActivity {
         statisticsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), ResultsPresentationActivity.class);
+                Intent intent = new Intent(getApplicationContext(), ResultsListActivity.class);
                 startActivity(intent);
             }
         });

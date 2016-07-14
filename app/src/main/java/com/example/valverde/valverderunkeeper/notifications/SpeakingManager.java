@@ -1,4 +1,4 @@
-package com.example.valverde.valverderunkeeper.notification;
+package com.example.valverde.valverderunkeeper.notifications;
 
 public interface SpeakingManager {
     void notifyDistance(double distance);

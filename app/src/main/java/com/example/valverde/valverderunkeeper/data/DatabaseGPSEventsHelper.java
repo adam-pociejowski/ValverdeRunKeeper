@@ -77,6 +77,32 @@ public class DatabaseGPSEventsHelper extends SQLiteOpenHelper {
                 events.add(event);
             } while (c.moveToNext());
         }
+        c.close();
+        return events;
+    }
+
+    public ArrayList<GPSEvent> getRoute(long resultId) {
+        SQLiteDatabase db = getReadableDatabase();
+        String SQL = "select * from "+TABLE_NAME+" where "+COL_2+"="+resultId;
+        Cursor c = db.rawQuery(SQL, null);
+        if (c.getCount() <= 0){
+            c.close();
+            return null;
+        }
+        ArrayList<GPSEvent> events = new ArrayList<>();
+        if (c.moveToFirst()) {
+            do {
+                long id = c.getLong(1);
+                long time = c.getLong(2);
+                double lat = c.getDouble(3);
+                double lng = c.getDouble(4);
+                float accuracy = c.getFloat(5);
+                GPSEvent event = new GPSEvent(time, lat, lng, accuracy);
+                event.setId(id);
+                events.add(event);
+            } while (c.moveToNext());
+        }
+        c.close();
         return events;
     }
 }

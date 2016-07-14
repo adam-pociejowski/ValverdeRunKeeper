@@ -33,6 +33,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -43,9 +44,14 @@
             android:name=".running.processing_result.FinalizeRunActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".statistics.ResultsPresentationActivity"
+            android:name=".statistics.ResultsListActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".settings.SettingsActivity"
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".statistics.ResultPresentationActivity"
             android:screenOrientation="portrait" />
     </application>
+
 </manifest>

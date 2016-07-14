@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/lightGreen"
-    tools:context="com.example.valverde.valverderunkeeper.statistics.ResultsPresentationActivity">
+    tools:context=".statistics.ResultsListActivity">
 
     <LinearLayout
         android:orientation="horizontal"

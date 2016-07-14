@@ -1,5 +1,6 @@
 package com.example.valverde.valverderunkeeper.settings;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 
 import com.example.valverde.valverderunkeeper.R;
 import com.example.valverde.valverderunkeeper.main_menu.MainMenuActivity;
+
+import java.text.DecimalFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
         final Settings settings = SettingsManager.getSettings(getApplicationContext());
-        setSettingsInFields(settings);
+        setSettingsInFields(settings, this);
         setActiveStatusSoundNotificationFields(settings);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -88,30 +91,36 @@ public class SettingsActivity extends AppCompatActivity {
         catch (NumberFormatException e) {
             String message = "Wrong format of saving data";
             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-            Log.d("Settings Activity", "Wrong settings data to save");
+            Log.e("Settings Activity", "Wrong settings data to save");
         }
     }
 
-    private void setSettingsInFields(Settings settings) {
-        String accuracy = Float.toString(settings.getGpsAccuracyLimit());
-        String refresh = Integer.toString(settings.getEventsRefreshTimeInSeconds());
-        String defaultZoom = Float.toString(settings.getDefaultZoom());
-        String amountOFEventsInAvSpeed = Integer.toString(settings.getAmountOfEventsInAverangeSpeed());
-        String maxUpperChange = Double.toString(settings.getMaxUpperChangeBetweenEvents());
-        String maxLowerChange = Double.toString(settings.getMaxLowerChangeBetweenEvents());
-        String changePerMeasure = Double.toString(settings.getMaxChangeIncreasePerMeasure());
-        boolean soundNotifications = settings.getSoundNotifications();
-        String soundNotificationsDistInterval = Double.toString(settings.getSoundNotificationDistanceInterval());
+    private void setSettingsInFields(Settings settings, Context context) {
+        try {
+            String accuracy = Float.toString(settings.getGpsAccuracyLimit());
+            String refresh = Integer.toString(settings.getEventsRefreshTimeInSeconds());
+            String defaultZoom = Float.toString(settings.getDefaultZoom());
+            String amountOFEventsInAvSpeed = Integer.toString(settings.getAmountOfEventsInAverangeSpeed());
+            String maxUpperChange = Double.toString(settings.getMaxUpperChangeBetweenEvents());
+            String maxLowerChange = Double.toString(settings.getMaxLowerChangeBetweenEvents());
+            String changePerMeasure = Double.toString(settings.getMaxChangeIncreasePerMeasure());
+            boolean soundNotifications = settings.getSoundNotifications();
+            DecimalFormat df = new DecimalFormat("#.##");
+            String soundNotificationsDistInterval = df.format(settings.getSoundNotificationDistanceInterval());
 
-        gpsAccuracyField.setText(accuracy);
-        gpsEventsRefreshField.setText(refresh);
-        gpsDefaultMapZoomField.setText(defaultZoom);
-        gpsAmountOfEventsInAvgSpeedField.setText(amountOFEventsInAvSpeed);
-        gpsMaxUpperChangeBetweenEventsField.setText(maxUpperChange);
-        gpsMaxLowerChangeBetweenEventsField.setText(maxLowerChange);
-        gpsChangeIncreasePerMeasureField.setText(changePerMeasure);
-        Log.d("LOG", soundNotifications+" sound");
-        soundNotificationsCheckBox.setChecked(soundNotifications);
-        soundNotificationsDistanceIntervalField.setText(soundNotificationsDistInterval);
+            gpsAccuracyField.setText(accuracy);
+            gpsEventsRefreshField.setText(refresh);
+            gpsDefaultMapZoomField.setText(defaultZoom);
+            gpsAmountOfEventsInAvgSpeedField.setText(amountOFEventsInAvSpeed);
+            gpsMaxUpperChangeBetweenEventsField.setText(maxUpperChange);
+            gpsMaxLowerChangeBetweenEventsField.setText(maxLowerChange);
+            gpsChangeIncreasePerMeasureField.setText(changePerMeasure);
+            soundNotificationsCheckBox.setChecked(soundNotifications);
+            soundNotificationsDistanceIntervalField.setText(soundNotificationsDistInterval);
+        }
+        catch (Exception e) {
+            SettingsManager.setDefaultSettings(context);
+            setSettingsInFields(SettingsManager.getSettings(context), context);
+        }
     }
 }

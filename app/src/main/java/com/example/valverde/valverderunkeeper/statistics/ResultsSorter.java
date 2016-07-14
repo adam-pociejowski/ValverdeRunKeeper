@@ -5,7 +5,7 @@ import android.util.Log;
 import com.example.valverde.valverderunkeeper.running.processing_result.RunResult;
 import java.util.ArrayList;
 
-public class SortResult {
+public class ResultsSorter {
     public static ArrayList<RunResult> sortByDistance(ArrayList<RunResult> results) {
         RunResult key;
         int j;

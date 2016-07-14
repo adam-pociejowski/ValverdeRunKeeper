@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.valverde.valverderunkeeper"
-        minSdkVersion 21
+        minSdkVersion 22
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"

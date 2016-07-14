@@ -10,12 +10,21 @@ public class RunResult implements Serializable {
     private double distance;
     private int calories;
     private long date;
+    private long resultId;
     private ArrayList<GPSEvent> route;
 
     public RunResult(long time, double distance, int calories) {
         this.time = time;
         this.distance = distance;
         this.calories = calories;
+    }
+
+    public long getResultId() {
+        return resultId;
+    }
+
+    public void setResultId(long resultId) {
+        this.resultId = resultId;
     }
 
     public long getDate() {

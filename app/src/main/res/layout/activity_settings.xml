@@ -121,7 +121,7 @@
                     android:layout_height="wrap_content" />
 
                 <TextView android:id="@+id/gpsSoundNotificationsDistanceIntervalUnitsField"
-                    android:text="@string/gpsAccuracyUnits"
+                    android:text="@string/distanceUnits"
                     style="@style/settingsFont"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content" />

@@ -13,7 +13,7 @@ import com.example.valverde.valverderunkeeper.data.DatabaseRunResultsHelper;
 import com.example.valverde.valverderunkeeper.main_menu.MainMenuActivity;
 import com.example.valverde.valverderunkeeper.running.GPSEvent;
 import com.example.valverde.valverderunkeeper.running.Timer;
-import com.example.valverde.valverderunkeeper.statistics.SortResult;
+import com.example.valverde.valverderunkeeper.statistics.ResultsSorter;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -40,7 +40,6 @@ public class FinalizeRunActivity extends Activity {
         ButterKnife.bind(this);
         Intent intent = getIntent();
         final DatabaseRunResultsHelper db = new DatabaseRunResultsHelper(this);
-//        db.onUpgrade(db.getWritableDatabase(), 1, 1);
         final DatabaseGPSEventsHelper dh = new DatabaseGPSEventsHelper(this);
         final RunResult result = (RunResult) intent.getSerializableExtra("result");
         hideRecordTextViews();
@@ -52,10 +51,13 @@ public class FinalizeRunActivity extends Activity {
             public void onClick(View view) {
                 Date date = new Date();
                 result.setDate(date.getTime());
+                long id = db.getMaxResultId()  +1;
+                result.setResultId(id);
+                for (GPSEvent e : result.getRoute()) {
+                    e.setId(id);
+                }
                 db.insertResult(result);
                 dh.insertData(result.getRoute());
-                showAllEvents(dh.getAllEvents());
-                showAllResults(db.getAllResults());
                 Intent i = new Intent(getApplicationContext(), MainMenuActivity.class);
                 startActivity(i);
             }
@@ -94,7 +96,7 @@ public class FinalizeRunActivity extends Activity {
     }
 
     private void checkIfIsDistanceRecord(ArrayList<RunResult> results, RunResult result) {
-        RunResult highest = SortResult.getHighestByDistance(results);
+        RunResult highest = ResultsSorter.getHighestByDistance(results);
         if (result.getDistance() > highest.getDistance()) {
             distanceRecordLabel.setVisibility(View.VISIBLE);
             Log.d(getClass().getName(), "New distance record!");
@@ -102,7 +104,7 @@ public class FinalizeRunActivity extends Activity {
     }
 
     private void checkIfIsSpeedRecord(ArrayList<RunResult> results, RunResult result) {
-        RunResult highest = SortResult.getHighestBySpeed(results);
+        RunResult highest = ResultsSorter.getHighestBySpeed(results);
         if (result.getAvgSpeed() > highest.getAvgSpeed()) {
             speedRecordLabel.setVisibility(View.VISIBLE);
             Log.d(getClass().getName(), "New speed record!");
@@ -110,24 +112,10 @@ public class FinalizeRunActivity extends Activity {
     }
 
     private void checkIfIsTimeRecord(ArrayList<RunResult> results, RunResult result) {
-        RunResult highest = SortResult.getHighestByTime(results);
+        RunResult highest = ResultsSorter.getHighestByTime(results);
         if (result.getTime() > highest.getTime()) {
             timeRecordLabel.setVisibility(View.VISIBLE);
             Log.d(getClass().getName(), "New time record!");
-        }
-    }
-
-    public static void showAllResults(ArrayList<RunResult> results) {
-        Log.d("RESULTS", "RESULTS LIST");
-        for (RunResult r : results) {
-            Log.d("RunResults", "Time: "+r.getTime()+" | AVG: "+r.getAvgSpeed()+" | Distance: "+r.getDistance());
-        }
-    }
-
-    private void showAllEvents(ArrayList<GPSEvent> events) {
-        for (GPSEvent e : events) {
-            Log.d("SPEED", "ID: "+e.getId()+" |  ACCURACY: "+e.getAccuracy()+
-                    " | LAT: "+e.getLat()+" | LNG: "+e.getLng());
         }
     }
 }

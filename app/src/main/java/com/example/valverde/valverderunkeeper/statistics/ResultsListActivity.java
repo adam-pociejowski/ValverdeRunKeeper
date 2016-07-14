@@ -1,11 +1,13 @@
 package com.example.valverde.valverderunkeeper.statistics;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -13,7 +15,6 @@ import com.example.valverde.valverderunkeeper.R;
 import com.example.valverde.valverderunkeeper.data.DatabaseRunResultsHelper;
 import com.example.valverde.valverderunkeeper.running.Timer;
 import com.example.valverde.valverderunkeeper.running.processing_result.RunResult;
-
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -22,7 +23,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ResultsPresentationActivity extends AppCompatActivity {
+public class ResultsListActivity extends AppCompatActivity {
     @BindView(R.id.resultsPresentationListView) ListView listView;
 
     @Override
@@ -30,10 +31,19 @@ public class ResultsPresentationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.results_presentation_layout);
         ButterKnife.bind(this);
-        List<RunResult> results = getResultsFromDatabase();
+        final List<RunResult> results = getResultsFromDatabase();
         MyListViewAdapter myAdapter = new MyListViewAdapter(this.getApplicationContext());
         myAdapter.setResults(results);
         listView.setAdapter(myAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                RunResult result = results.get(i);
+                Intent intent = new Intent(getApplicationContext(), ResultPresentationActivity.class);
+                intent.putExtra("result", result);
+                startActivity(intent);
+            }
+        });
     }
 
     private List<RunResult> getResultsFromDatabase() {

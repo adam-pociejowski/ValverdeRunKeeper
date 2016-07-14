@@ -21,8 +21,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.valverde.valverderunkeeper.R;
-import com.example.valverde.valverderunkeeper.notification.RunningSpeaker;
-import com.example.valverde.valverderunkeeper.notification.SpeakingManager;
+import com.example.valverde.valverderunkeeper.notifications.RunningSpeaker;
+import com.example.valverde.valverderunkeeper.notifications.SpeakingManager;
 import com.example.valverde.valverderunkeeper.running.processing_result.FinalizeRunActivity;
 import com.example.valverde.valverderunkeeper.running.processing_result.RunResult;
 import com.example.valverde.valverderunkeeper.settings.SettingsManager;
@@ -75,9 +75,8 @@ public class TrackerActivity extends AppCompatActivity {
             speakingManager = new RunningSpeaker(this);
             speakingManager.setDistanceNotifyInterval(settings.getSoundNotificationDistanceInterval());
         }
-
-
         polylineOptions.color(Color.BLUE);
+
         if (isServicesAvailable()) {
             Log.i("D", "Services are available");
             if (initMap()) {

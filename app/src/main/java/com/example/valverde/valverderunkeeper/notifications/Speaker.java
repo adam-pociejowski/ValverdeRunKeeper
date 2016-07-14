@@ -1,4 +1,4 @@
-package com.example.valverde.valverderunkeeper.notification;
+package com.example.valverde.valverderunkeeper.notifications;
 
 import android.content.Context;
 import android.speech.tts.TextToSpeech;

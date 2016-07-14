@@ -9,7 +9,9 @@
     <string name="speedUnits">km/h</string>
     <string name="distanceUnits">km</string>
     <string name="gpsAccuracyUnits">m</string>
-    <string name="fullNameOfDistanceUnits">meters</string>
+    <string name="fullNameOfDistanceMetersUnits">meters</string>
+    <string name="fullNameOfDistanceKilometersUnits">kilometers</string>
+    <string name="fullNameOfDistanceKilometerUnits">kilometer</string>
     <string name="gpsTimeUnits">sec</string>
 
     <string name="accuracyInitStatus">None</string>
@@ -32,6 +34,8 @@
     <string name="avgSpeedLabel">Averange Speed:</string>
     <string name="distanceLabel">Distance:</string>
     <string name="caloriesLabel">Calories:</string>
+    <string name="dateLabel">Date:</string>
+    <string name="copperTestLabel">Copper test:</string>
     <string name="newResult">New Result</string>
     <string name="recordLabel">Record!</string>
 

@@ -18,7 +18,7 @@ public class SettingsManager {
         settings.setMaxChangeIncreasePerMeasure((double) preferences.getInt("maxChangeIncreasePerMeasure", 0));
         settings.setGpsAccuracyLimit(preferences.getFloat("gpsAccuracyLimit", 0f));
         settings.setSoundNotifications(preferences.getBoolean("soundNotifications", false));
-        settings.setSoundNotificationDistanceInterval((double) preferences.getInt("soundNotificationDistanceInterval", 0));
+        settings.setSoundNotificationDistanceInterval((double) preferences.getFloat("soundNotificationDistanceInterval", 0f));
         return settings;
     }
 
@@ -35,7 +35,32 @@ public class SettingsManager {
         editor.putInt("maxChangeIncreasePerMeasure", (int) settings.getMaxChangeIncreasePerMeasure());
         editor.putFloat("gpsAccuracyLimit", settings.getGpsAccuracyLimit());
         editor.putBoolean("soundNotifications", settings.getSoundNotifications());
-        editor.putInt("soundNotificationDistanceInterval", (int) settings.getSoundNotificationDistanceInterval());
+        editor.putFloat("soundNotificationDistanceInterval", (float) settings.getSoundNotificationDistanceInterval());
+        editor.apply();
+    }
+
+    public static void setDefaultSettings(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(
+                PREFERENCES_KEY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putFloat("defaultZoom", 16.0f);
+        editor.putInt("eventsRefreshTimeInSeconds", 3);
+        editor.putInt("amountOfEventsInAverangeSpeed", 4);
+        editor.putInt("maxUpperChangeBetweenEvents", 8);
+        editor.putInt("maxLowerChangeBetweenEvents", 8);
+        editor.putInt("maxChangeIncreasePerMeasure", 6);
+        editor.putFloat("gpsAccuracyLimit", 25.0f);
+        editor.putBoolean("soundNotifications", true);
+        editor.putFloat("soundNotificationDistanceInterval", 0.5f);
+        editor.apply();
+    }
+
+    public static void resetSettings(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(
+                PREFERENCES_KEY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
         editor.apply();
     }
 }
