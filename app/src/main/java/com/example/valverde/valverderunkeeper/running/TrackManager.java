@@ -24,7 +24,22 @@ public class TrackManager {
         settings = s;
     }
 
-    public double getDistanceInKm(double lat1, double lng1, double lat2, double lng2) {
+//    public double getDistanceInKm(double lat1, double lng1, double lat2, double lng2) {
+//        double factor = Math.PI / 180.0;
+//        double dlng = (lng2 - lng1) * factor;
+//        double dlat = (lat2 - lat1) * factor;
+//        double a = Math.pow(Math.sin(dlat / 2.0), 2.0) + Math.cos(lat1 * factor) *
+//                Math.cos(lat2 * factor) * Math.pow(Math.sin(dlng / 2.0), 2.0);
+//        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
+//        return 6367 * c;
+//    }
+
+    public double getDistanceInKm(GPSEvent firstEvent, GPSEvent secondEvent) {
+        double lat1 = firstEvent.getLat();
+        double lng1 = firstEvent.getLng();
+        double lat2 = secondEvent.getLat();
+        double lng2 = secondEvent.getLng();
+
         double factor = Math.PI / 180.0;
         double dlng = (lng2 - lng1) * factor;
         double dlat = (lat2 - lat1) * factor;
@@ -40,8 +55,7 @@ public class TrackManager {
             return  0.0;
         }
         GPSEvent lastEvent = actualGPSEvents.get(actualGPSEvents.size() - 1);
-        double distanceBetweenEvents =  getDistanceInKm(lastEvent.getLat(), lastEvent.getLng(),
-                newEvent.getLat(), newEvent.getLng());
+        double distanceBetweenEvents =  getDistanceInKm(lastEvent, newEvent);
         long timeBetweenEvents = newEvent.getTime() - lastEvent.getTime();
         double speedBetweenEvents = getSpeedBetweenEvents(distanceBetweenEvents, timeBetweenEvents);
         if (iSSpeedMeasureGood(speedBetweenEvents) && newEvent.getAccuracy() <= settings.getGpsAccuracyLimit()) {
@@ -49,14 +63,13 @@ public class TrackManager {
                 actualGPSEvents.remove(0);
 
             actualGPSEvents.add(newEvent);
-            if (eventsCounter++ % EVENTS_PER_POINT_ON_ROUTE_MAP == 0)
-                route.add(newEvent);
+//            if (eventsCounter++ % EVENTS_PER_POINT_ON_ROUTE_MAP == 0)
+            route.add(newEvent);
             double travelDistance = 0.0;
             for (int i = 0; i < actualGPSEvents.size() - 1; i++) {
                 GPSEvent earlierEvent = actualGPSEvents.get(i);
                 GPSEvent nextEvent = actualGPSEvents.get(i + 1);
-                distanceBetweenEvents = getDistanceInKm(earlierEvent.getLat(), earlierEvent.getLng(),
-                        nextEvent.getLat(), nextEvent.getLng());
+                distanceBetweenEvents = getDistanceInKm(earlierEvent, nextEvent);
                 travelDistance += distanceBetweenEvents;
                 if (i == actualGPSEvents.size() - 2 )
                     overallDistance += distanceBetweenEvents;
@@ -109,7 +122,7 @@ public class TrackManager {
         return route;
     }
 
-    private double getSpeedBetweenEvents(double distanceBetween, long timeBetween) {
+    public double getSpeedBetweenEvents(double distanceBetween, long timeBetween) {
         return distanceBetween / ((double) timeBetween / HOUR_FACTOR);
     }
 

@@ -1,10 +1,8 @@
 package com.example.valverde.valverderunkeeper.running;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -12,45 +10,38 @@ import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.example.valverde.valverderunkeeper.R;
 import com.example.valverde.valverderunkeeper.notifications.RunningSpeaker;
 import com.example.valverde.valverderunkeeper.notifications.SpeakingManager;
 import com.example.valverde.valverderunkeeper.running.processing_result.FinalizeRunActivity;
 import com.example.valverde.valverderunkeeper.running.processing_result.RunResult;
+import com.example.valverde.valverderunkeeper.running.processing_result.TempoChartChangeNotifier;
 import com.example.valverde.valverderunkeeper.settings.SettingsManager;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.PolylineOptions;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class TrackerActivity extends AppCompatActivity {
-    private static final double INIT_LAT = 50.79829564, INIT_LNG = 16.25238182;
-    private static final int GPS_ERROR_DIALOG_REQUEST = 9001;
     private com.example.valverde.valverderunkeeper.settings.Settings settings;
-    private PolylineOptions polylineOptions = new PolylineOptions();
     private LocationManager locationManager;
     private LocationListener locationListener;
     private SpeakingManager speakingManager;
     private String runningState = "init";
+    private TempoChartChangeNotifier tempoChartNotifier;
     private Timer timerThread;
     private Handler handler;
-    private GoogleMap map;
     @BindView(R.id.accuracyProgressBar) ProgressBar accuracyProgressBar;
     @BindView(R.id.speedField) TextView speedField;
     @BindView(R.id.distanceField) TextView distanceField;
@@ -58,6 +49,7 @@ public class TrackerActivity extends AppCompatActivity {
     @BindView(R.id.timeField) TextView timerField;
     @BindView(R.id.stopButton) Button stopButton;
     @BindView(R.id.startButton) Button startButton;
+    @BindView(R.id.trackerMainLayout) RelativeLayout layout;
 
 
     @Override
@@ -75,16 +67,8 @@ public class TrackerActivity extends AppCompatActivity {
             speakingManager = new RunningSpeaker(this);
             speakingManager.setDistanceNotifyInterval(settings.getSoundNotificationDistanceInterval());
         }
-        polylineOptions.color(Color.BLUE);
+        initChart();
 
-        if (isServicesAvailable()) {
-            Log.i("D", "Services are available");
-            if (initMap()) {
-                Log.i("D", "Map is ready to use");
-                goToLocation(INIT_LAT, INIT_LNG, settings.getDefaultZoom());
-            } else
-                Log.i("D", "Map is not available");
-        }
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,6 +110,8 @@ public class TrackerActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), FinalizeRunActivity.class);
                     intent.putExtra("result", result);
                     startActivity(intent);
+                    speakingManager.close();
+                    finish();
                 }
             }
         });
@@ -136,7 +122,6 @@ public class TrackerActivity extends AppCompatActivity {
             public void onLocationChanged(Location location) {
                 float signalAccuracy = location.getAccuracy();
                 setAccuracyProgressBarStatus(signalAccuracy);
-                goToLocation(location.getLatitude(), location.getLongitude(), settings.getDefaultZoom());
 
                 if (runningState.equals("started")) {
                     TrackManager manager = TrackManager.getInstance();
@@ -151,11 +136,10 @@ public class TrackerActivity extends AppCompatActivity {
                             " "+getString(R.string.distanceUnits);
                     speedField.setText(averangeSpeedInFormat);
                     distanceField.setText(overallDistanceInFormat);
-                    polylineOptions.add(new LatLng(gpsEvent.getLat(), gpsEvent.getLng()));
-                    map.addPolyline(polylineOptions);
                     if (settings.getSoundNotifications()) {
                         speakingManager.notifyDistance(distance);
                     }
+                    tempoChartNotifier.notifyDistance(distance);
 
                     /*** DEBUG ****/
                     Log.d("TrackerActivity", "LAT: "+location.getLatitude()+"|  LNG: "+location.getLongitude()+
@@ -215,28 +199,12 @@ public class TrackerActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isServicesAvailable() {
-        int isAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (isAvailable == ConnectionResult.SUCCESS) return true;
-        else if (GooglePlayServicesUtil.isUserRecoverableError(isAvailable)) {
-            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(isAvailable, this, GPS_ERROR_DIALOG_REQUEST);
-            dialog.show();
-        }
-        else Toast.makeText(this, "Can't connect to GooglePlayServices", Toast.LENGTH_SHORT).show();
-        return false;
-    }
-
-    private boolean initMap() {
-        if (map == null) {
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-            map = mapFragment.getMap();
-        }
-        return (map != null);
-    }
-
-    private void goToLocation(double latitude, double longtitude, float zoom) {
-        LatLng ll = new LatLng(latitude, longtitude);
-        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, zoom);
-        map.moveCamera(update);
+    private void initChart() {
+        tempoChartNotifier = new TempoChartChangeNotifier(this);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ABOVE, R.id.bottomLayout);
+        params.addRule(RelativeLayout.BELOW, R.id.topLayout);
+        layout.addView(tempoChartNotifier.getChart(), params);
     }
 }

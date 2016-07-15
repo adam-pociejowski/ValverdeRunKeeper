@@ -14,7 +14,6 @@ import com.example.valverde.valverderunkeeper.main_menu.MainMenuActivity;
 import com.example.valverde.valverderunkeeper.running.GPSEvent;
 import com.example.valverde.valverderunkeeper.running.Timer;
 import com.example.valverde.valverderunkeeper.statistics.ResultsSorter;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -58,6 +57,14 @@ public class FinalizeRunActivity extends Activity {
                 }
                 db.insertResult(result);
                 dh.insertData(result.getRoute());
+                Intent i = new Intent(getApplicationContext(), MainMenuActivity.class);
+                startActivity(i);
+            }
+        });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(), MainMenuActivity.class);
                 startActivity(i);
             }

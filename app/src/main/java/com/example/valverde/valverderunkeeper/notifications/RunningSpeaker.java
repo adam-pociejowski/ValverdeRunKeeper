@@ -1,7 +1,6 @@
 package com.example.valverde.valverderunkeeper.notifications;
 
 import android.content.Context;
-
 import com.example.valverde.valverderunkeeper.R;
 
 public class RunningSpeaker implements SpeakingManager {
