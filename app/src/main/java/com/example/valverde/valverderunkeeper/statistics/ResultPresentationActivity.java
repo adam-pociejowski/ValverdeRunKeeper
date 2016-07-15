@@ -72,7 +72,9 @@ public class ResultPresentationActivity extends AppCompatActivity {
         double endLat = events.get(events.size() - 1).getLat();
         double endLng = events.get(events.size() - 1).getLng();
         Settings settings = SettingsManager.getSettings(this);
-        goToLocation(startLat, startLng, settings.getDefaultZoom());
+        double centerLat = (startLat + endLat) / 2.0;
+        double centerLng = (startLng + endLng) / 2.0;
+        goToLocation(centerLat, centerLng, settings.getDefaultZoom());
         LatLng startLL = new LatLng(startLat, startLng);
         LatLng endLL = new LatLng(endLat, endLng);
         map.addMarker(new MarkerOptions()
@@ -111,7 +113,7 @@ public class ResultPresentationActivity extends AppCompatActivity {
         if (events == null)
             averangeAccuracy = "unknown";
         else
-            averangeAccuracy = getAverangeGPSAccuracy(events);
+            averangeAccuracy = getAverangeGPSAccuracy(events)+" "+getString(R.string.gpsAccuracyUnits);
 
         timeField.setText(timeInFormat);
         distanceField.setText(distanceInFormat);

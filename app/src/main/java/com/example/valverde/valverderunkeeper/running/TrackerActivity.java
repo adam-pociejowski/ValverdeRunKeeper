@@ -10,14 +10,12 @@ import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,8 +45,8 @@ public class TrackerActivity extends AppCompatActivity {
     @BindView(R.id.distanceField) TextView distanceField;
     @BindView(R.id.accuracyProgressBarField) TextView progressBarField;
     @BindView(R.id.timeField) TextView timerField;
-    @BindView(R.id.stopButton) Button stopButton;
-    @BindView(R.id.startButton) Button startButton;
+    @BindView(R.id.stopButton) ImageButton stopButton;
+    @BindView(R.id.startButton) ImageButton startButton;
     @BindView(R.id.trackerMainLayout) RelativeLayout layout;
 
 
@@ -76,15 +74,15 @@ public class TrackerActivity extends AppCompatActivity {
                     timerThread = new Timer(handler, timerField);
                     timerThread.start();
                     runningState = "started";
-                    startButton.setText(getString(R.string.pauseButton));
+                    startButton.setImageResource(R.drawable.pause_black);
                 } else if (runningState.equals("started")) {
                     timerThread.pause();
                     runningState = "paused";
-                    startButton.setText(getString(R.string.startButton));
+                    startButton.setImageResource(R.drawable.play_black);
                 } else if (runningState.equals("paused")) {
                     timerThread.unpause();
                     runningState = "started";
-                    startButton.setText(getString(R.string.pauseButton));
+                    startButton.setImageResource(R.drawable.pause_black);
                 }
             }
         });
@@ -110,7 +108,6 @@ public class TrackerActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), FinalizeRunActivity.class);
                     intent.putExtra("result", result);
                     startActivity(intent);
-                    speakingManager.close();
                     finish();
                 }
             }
@@ -206,5 +203,11 @@ public class TrackerActivity extends AppCompatActivity {
         params.addRule(RelativeLayout.ABOVE, R.id.bottomLayout);
         params.addRule(RelativeLayout.BELOW, R.id.topLayout);
         layout.addView(tempoChartNotifier.getChart(), params);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        speakingManager.close();
     }
 }

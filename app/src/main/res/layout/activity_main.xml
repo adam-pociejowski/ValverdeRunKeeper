@@ -7,7 +7,6 @@
     android:background="@color/lightGreen"
     tools:context=".running.TrackerActivity">
 
-
     <LinearLayout
         android:id="@+id/topLayout"
         android:layout_marginStart="15dp"
@@ -32,14 +31,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
-
-
-    <!--<fragment android:id="@+id/map"-->
-        <!--android:layout_weight="30"-->
-        <!--android:name="com.google.android.gms.maps.SupportMapFragment"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp" />-->
-
 
     <LinearLayout android:id="@+id/bottomLayout"
         android:layout_alignParentBottom="true"
@@ -101,27 +92,24 @@
             android:paddingEnd="50dp"
             android:orientation="horizontal" >
 
-            <Button android:id="@+id/stopButton"
-                android:text="@string/stopButton"
-                style="@style/tinyButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            <ImageButton android:id="@+id/stopButton"
+                android:contentDescription="@string/stopButton"
+                android:src="@drawable/stop_black"
+                android:background="@null"
+                android:layout_width="70dp"
+                android:layout_height="70dp" />
 
             <View
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <Button android:id="@+id/startButton"
-                android:text="@string/startButton"
-                style="@style/tinyButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            <ImageButton android:id="@+id/startButton"
+                android:contentDescription="@string/startButton"
+                android:src="@drawable/play_black"
+                android:background="@null"
+                android:layout_width="70dp"
+                android:layout_height="70dp" />
         </LinearLayout>
     </LinearLayout>
-
-
-
-
-
 </RelativeLayout>
