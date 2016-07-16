@@ -1,15 +1,14 @@
 package com.example.valverde.valverderunkeeper.running;
 
 import com.example.valverde.valverderunkeeper.settings.Settings;
-import com.example.valverde.valverderunkeeper.settings.SettingsManager;
 
 import java.util.ArrayList;
 
-public class TrackManager {
+public class TrackUtils {
     private double upperChangeFactor = 0.0, lowerChangeFactor = 0.0;
     private static final int EVENTS_PER_POINT_ON_ROUTE_MAP = 3;
     private static final double HOUR_FACTOR = 3600000.0;
-    private static volatile TrackManager instance = null;
+    private static volatile TrackUtils instance = null;
     private ArrayList<GPSEvent> route = new ArrayList<>();
     private ArrayList<GPSEvent> actualGPSEvents = new ArrayList<>();
     private static Settings settings;
@@ -18,7 +17,7 @@ public class TrackManager {
     private int eventsCounter = 0;
 
 
-    private TrackManager() {}
+    private TrackUtils() {}
 
     public static void setSettings(Settings s) {
         settings = s;
@@ -130,9 +129,9 @@ public class TrackManager {
         return overallDistance;
     }
 
-    public static TrackManager getInstance() {
+    public static TrackUtils getInstance() {
         if (instance == null)
-            instance = new TrackManager();
+            instance = new TrackUtils();
         return instance;
     }
 }

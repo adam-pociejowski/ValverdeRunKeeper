@@ -60,5 +60,6 @@
     <string name="gpsChangeIncreasePerMeasure">Change factor:</string>
     <string name="gpsSoundNotifications">Sound notifications:</string>
     <string name="gpsSoundNotificationsDistanceInterval">Distance interval:</string>
+    <string name="gpsScreenLockSupport">Screen lock support:</string>
     <string name="gpsSaveSettingsButton">Save settings</string>
 </resources>

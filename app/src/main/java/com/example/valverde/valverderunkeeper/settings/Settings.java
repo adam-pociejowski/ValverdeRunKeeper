@@ -10,6 +10,19 @@ public class Settings {
     private float gpsAccuracyLimit;
     private boolean soundNotifications;
     private double soundNotificationDistanceInterval;
+    private boolean screenLockSupport;
+
+    public boolean isSoundNotifications() {
+        return soundNotifications;
+    }
+
+    public boolean isScreenLockSupport() {
+        return screenLockSupport;
+    }
+
+    public void setScreenLockSupport(boolean screenLockSupport) {
+        this.screenLockSupport = screenLockSupport;
+    }
 
     public boolean getSoundNotifications() {
         return soundNotifications;

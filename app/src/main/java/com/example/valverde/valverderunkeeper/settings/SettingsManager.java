@@ -19,6 +19,7 @@ public class SettingsManager {
         settings.setGpsAccuracyLimit(preferences.getFloat("gpsAccuracyLimit", 0f));
         settings.setSoundNotifications(preferences.getBoolean("soundNotifications", false));
         settings.setSoundNotificationDistanceInterval((double) preferences.getFloat("soundNotificationDistanceInterval", 0f));
+        settings.setScreenLockSupport(preferences.getBoolean("screenLockSupport", false));
         return settings;
     }
 
@@ -36,6 +37,7 @@ public class SettingsManager {
         editor.putFloat("gpsAccuracyLimit", settings.getGpsAccuracyLimit());
         editor.putBoolean("soundNotifications", settings.getSoundNotifications());
         editor.putFloat("soundNotificationDistanceInterval", (float) settings.getSoundNotificationDistanceInterval());
+        editor.putBoolean("screenLockSupport", settings.isScreenLockSupport());
         editor.apply();
     }
 
@@ -53,6 +55,7 @@ public class SettingsManager {
         editor.putFloat("gpsAccuracyLimit", 25.0f);
         editor.putBoolean("soundNotifications", true);
         editor.putFloat("soundNotificationDistanceInterval", 0.5f);
+        editor.putBoolean("screenLockSupport", true);
         editor.apply();
     }
 

@@ -44,6 +44,11 @@ public class RunningSpeaker implements SpeakingManager {
     }
 
     @Override
+    public void speak(String text) {
+        speaker.speak(text);
+    }
+
+    @Override
     public void setDistanceNotifyInterval(double interval) {
         this.interval = interval;
     }

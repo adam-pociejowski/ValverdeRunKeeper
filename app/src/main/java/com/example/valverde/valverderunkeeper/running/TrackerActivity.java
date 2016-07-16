@@ -14,17 +14,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.example.valverde.valverderunkeeper.R;
-import com.example.valverde.valverderunkeeper.notifications.RunningSpeaker;
-import com.example.valverde.valverderunkeeper.notifications.SpeakingManager;
 import com.example.valverde.valverderunkeeper.running.processing_result.FinalizeRunActivity;
 import com.example.valverde.valverderunkeeper.running.processing_result.RunResult;
-import com.example.valverde.valverderunkeeper.running.processing_result.TempoChartChangeNotifier;
 import com.example.valverde.valverderunkeeper.settings.SettingsManager;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -33,13 +29,14 @@ import butterknife.ButterKnife;
 
 public class TrackerActivity extends AppCompatActivity {
     private com.example.valverde.valverderunkeeper.settings.Settings settings;
+    private static final String TAG = "TrackerActivity";
     private LocationManager locationManager;
     private LocationListener locationListener;
-    private SpeakingManager speakingManager;
     private String runningState = "init";
-    private TempoChartChangeNotifier tempoChartNotifier;
     private Timer timerThread;
     private Handler handler;
+    private static volatile TrackerActivity instance = null;
+    private UpdateManager updateManager;
     @BindView(R.id.accuracyProgressBar) ProgressBar accuracyProgressBar;
     @BindView(R.id.speedField) TextView speedField;
     @BindView(R.id.distanceField) TextView distanceField;
@@ -49,40 +46,31 @@ public class TrackerActivity extends AppCompatActivity {
     @BindView(R.id.startButton) ImageButton startButton;
     @BindView(R.id.trackerMainLayout) RelativeLayout layout;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        instance = this;
         handler = new Handler();
         settings = SettingsManager.getSettings(this);
-        TrackManager.setSettings(settings);
+        TrackUtils.setSettings(settings);
         int progressBarColor = getResources().getColor(R.color.darkGreen);
         accuracyProgressBar.getProgressDrawable().setColorFilter(progressBarColor,
                 android.graphics.PorterDuff.Mode.SRC_IN);
-        if (settings.getSoundNotifications()) {
-            speakingManager = new RunningSpeaker(this);
-            speakingManager.setDistanceNotifyInterval(settings.getSoundNotificationDistanceInterval());
-        }
-        initChart();
+        updateManager = new UpdateManager(this, layout);
 
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (runningState.equals("init")) {
-                    timerThread = new Timer(handler, timerField);
-                    timerThread.start();
-                    runningState = "started";
-                    startButton.setImageResource(R.drawable.pause_black);
+                if (runningState.equals("init") || runningState.equals("ready")) {
+                    initTracker();
+                    startTracker();
                 } else if (runningState.equals("started")) {
-                    timerThread.pause();
-                    runningState = "paused";
-                    startButton.setImageResource(R.drawable.play_black);
+                    pauseTracker();
                 } else if (runningState.equals("paused")) {
                     timerThread.unpause();
-                    runningState = "started";
-                    startButton.setImageResource(R.drawable.pause_black);
+                    startTracker();
                 }
             }
         });
@@ -91,11 +79,11 @@ public class TrackerActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (timerThread != null) {
                     timerThread.setRunning(false);
-                    TrackManager manager = TrackManager.getInstance();
-                    manager.addLastEventToRoute();
-                    double distance = manager.getOverallDistance();
+                    TrackUtils utils = TrackUtils.getInstance();
+                    utils.addLastEventToRoute();
+                    double distance = utils.getOverallDistance();
                     long overallTime = timerThread.getOverallTime();
-                    ArrayList<GPSEvent> route = manager.getRoute();
+                    ArrayList<GPSEvent> route = utils.getRoute();
                     RunResult result = new RunResult(overallTime, distance, 0);
                     result.setRoute(route);
                     timerThread = null;
@@ -121,11 +109,11 @@ public class TrackerActivity extends AppCompatActivity {
                 setAccuracyProgressBarStatus(signalAccuracy);
 
                 if (runningState.equals("started")) {
-                    TrackManager manager = TrackManager.getInstance();
+                    TrackUtils utils = TrackUtils.getInstance();
                     GPSEvent gpsEvent = new GPSEvent(System.currentTimeMillis(), location.getLatitude(),
                             location.getLongitude(), location.getAccuracy());
-                    double averangeSpeed = manager.getAverangeSpeedInKmH(gpsEvent);
-                    double distance = manager.getOverallDistance();
+                    double averangeSpeed = utils.getAverangeSpeedInKmH(gpsEvent);
+                    double distance = utils.getOverallDistance();
                     DecimalFormat decimalFormat = new DecimalFormat("#.##");
                     String averangeSpeedInFormat = decimalFormat.format(averangeSpeed)+
                             " "+getString(R.string.speedUnits);
@@ -133,13 +121,10 @@ public class TrackerActivity extends AppCompatActivity {
                             " "+getString(R.string.distanceUnits);
                     speedField.setText(averangeSpeedInFormat);
                     distanceField.setText(overallDistanceInFormat);
-                    if (settings.getSoundNotifications()) {
-                        speakingManager.notifyDistance(distance);
-                    }
-                    tempoChartNotifier.notifyDistance(distance);
+                    updateManager.notifyDistance(distance);
 
                     /*** DEBUG ****/
-                    Log.d("TrackerActivity", "LAT: "+location.getLatitude()+"|  LNG: "+location.getLongitude()+
+                    Log.d(TAG, "LAT: "+location.getLatitude()+"|  LNG: "+location.getLongitude()+
                             "  |  SPEED: "+averangeSpeedInFormat+" km/h  |  ACCURACY: "+signalAccuracy);
                 }
             }
@@ -164,6 +149,41 @@ public class TrackerActivity extends AppCompatActivity {
         }
         else locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                             settings.getEventsRefreshTimeInSeconds()*1000, 0, locationListener);
+    }
+
+    public void onScreenChangeState(String msg) {
+        if (msg.equals("SCREEN_ON")) {
+            if (runningState.equals("started")) {
+                pauseTracker();
+                updateManager.speak("Paused");
+            }
+        }
+        else if (msg.equals("SCREEN_OFF")) {
+            if (runningState.equals("init"))
+                runningState = "ready";
+            else {
+                if (runningState.equals("ready"))
+                    initTracker();
+                startTracker();
+                updateManager.speak("Started");
+            }
+        }
+    }
+
+    private void initTracker() {
+        timerThread = new Timer(handler, timerField);
+        timerThread.start();
+    }
+
+    private void pauseTracker() {
+        timerThread.pause();
+        runningState = "paused";
+        startButton.setImageResource(R.drawable.play_black);
+    }
+
+    private void startTracker() {
+        runningState = "started";
+        startButton.setImageResource(R.drawable.pause_black);
     }
 
     private void setAccuracyProgressBarStatus(float signalAccuracy) {
@@ -196,18 +216,14 @@ public class TrackerActivity extends AppCompatActivity {
         }
     }
 
-    private void initChart() {
-        tempoChartNotifier = new TempoChartChangeNotifier(this);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.ABOVE, R.id.bottomLayout);
-        params.addRule(RelativeLayout.BELOW, R.id.topLayout);
-        layout.addView(tempoChartNotifier.getChart(), params);
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        speakingManager.close();
+        updateManager.close();
+        Log.d(TAG, "onDestroy()");
+    }
+
+    public static TrackerActivity getInstance() {
+        return instance;
     }
 }

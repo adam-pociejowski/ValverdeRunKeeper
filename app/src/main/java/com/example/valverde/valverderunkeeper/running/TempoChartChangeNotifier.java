@@ -1,9 +1,7 @@
-package com.example.valverde.valverderunkeeper.running.processing_result;
+package com.example.valverde.valverderunkeeper.running;
 
 import android.content.Context;
-import com.example.valverde.valverderunkeeper.running.GPSEvent;
-import com.example.valverde.valverderunkeeper.running.TempoChart;
-import com.example.valverde.valverderunkeeper.running.TrackManager;
+
 import com.github.mikephil.charting.charts.LineChart;
 import java.util.ArrayList;
 
@@ -12,11 +10,11 @@ public class TempoChartChangeNotifier {
     private int nodesAmount = 0;
     private int lastEventIndex = 0;
     private double distanceInterval = 0.1;
-    private TrackManager manager;
+    private TrackUtils manager;
 
     public TempoChartChangeNotifier(Context context) {
         tempoChart = new TempoChart(context);
-        manager = TrackManager.getInstance();
+        manager = TrackUtils.getInstance();
     }
 
     public void notifyDistance(double distance) {

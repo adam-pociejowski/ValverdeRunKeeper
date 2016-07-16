@@ -34,6 +34,7 @@ public class SettingsActivity extends AppCompatActivity {
     @BindView(R.id.gpsSoundNotificationsDistanceIntervalLabel) TextView distIntervalLabel;
     @BindView(R.id.gpsSoundNotificationsDistanceIntervalUnitsField) TextView distIntervalUnits;
     @BindView(R.id.gpsNotificationCheckBox) CheckBox soundNotificationsCheckBox;
+    @BindView(R.id.gpsScreenLockSupportCheckBox) CheckBox screenLockSupportBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +87,7 @@ public class SettingsActivity extends AppCompatActivity {
             settings.setSoundNotifications(soundNotificationsCheckBox.isChecked());
             settings.setSoundNotificationDistanceInterval(
                     Double.parseDouble(soundNotificationsDistanceIntervalField.getText().toString()));
+            settings.setScreenLockSupport(screenLockSupportBox.isChecked());
             SettingsManager.setSettings(settings, getApplicationContext());
         }
         catch (NumberFormatException e) {
@@ -105,6 +107,7 @@ public class SettingsActivity extends AppCompatActivity {
             String maxLowerChange = Double.toString(settings.getMaxLowerChangeBetweenEvents());
             String changePerMeasure = Double.toString(settings.getMaxChangeIncreasePerMeasure());
             boolean soundNotifications = settings.getSoundNotifications();
+            boolean screenLockSupport = settings.isScreenLockSupport();
             DecimalFormat df = new DecimalFormat("#.##");
             String soundNotificationsDistInterval = df.format(settings.getSoundNotificationDistanceInterval());
 
@@ -117,6 +120,7 @@ public class SettingsActivity extends AppCompatActivity {
             gpsChangeIncreasePerMeasureField.setText(changePerMeasure);
             soundNotificationsCheckBox.setChecked(soundNotifications);
             soundNotificationsDistanceIntervalField.setText(soundNotificationsDistInterval);
+            screenLockSupportBox.setChecked(screenLockSupport);
         }
         catch (Exception e) {
             SettingsManager.setDefaultSettings(context);
