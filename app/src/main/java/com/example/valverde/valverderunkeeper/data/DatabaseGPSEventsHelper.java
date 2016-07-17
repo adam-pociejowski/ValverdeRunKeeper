@@ -105,4 +105,11 @@ public class DatabaseGPSEventsHelper extends SQLiteOpenHelper {
         c.close();
         return events;
     }
+
+    public void removeRoute(long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String SQL = "delete from "+TABLE_NAME+
+                " where "+COL_2+"="+id;
+        db.execSQL(SQL);
+    }
 }

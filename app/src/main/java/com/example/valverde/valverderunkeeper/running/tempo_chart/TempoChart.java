@@ -1,4 +1,4 @@
-package com.example.valverde.valverderunkeeper.running;
+package com.example.valverde.valverderunkeeper.running.tempo_chart;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -43,7 +43,7 @@ public class TempoChart {
         YAxis y1 = chart.getAxisLeft();
         y1.setTextColor(Color.BLACK);
         y1.setAxisMaxValue(22f);
-        y1.setAxisMinValue(4f);
+        y1.setAxisMinValue(0f);
         y1.setAxisLineWidth(2f);
         y1.setGridLineWidth(1f);
         y1.setTextSize(14f);

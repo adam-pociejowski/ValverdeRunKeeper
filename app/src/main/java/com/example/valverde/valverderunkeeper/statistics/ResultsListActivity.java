@@ -13,11 +13,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import com.example.valverde.valverderunkeeper.R;
 import com.example.valverde.valverderunkeeper.data.DatabaseRunResultsHelper;
+import com.example.valverde.valverderunkeeper.running.GPSEvent;
 import com.example.valverde.valverderunkeeper.running.Timer;
+import com.example.valverde.valverderunkeeper.running.TrackUtils;
 import com.example.valverde.valverderunkeeper.running.processing_result.RunResult;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import butterknife.BindView;
@@ -25,6 +28,9 @@ import butterknife.ButterKnife;
 
 public class ResultsListActivity extends AppCompatActivity {
     @BindView(R.id.resultsPresentationListView) ListView listView;
+    @BindView(R.id.avgDistanceLabel) TextView avgDistanceLabel;
+    @BindView(R.id.avgTimeLabel) TextView avgTimeLabel;
+    @BindView(R.id.avgSpeedLabel) TextView avgSpeedLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +50,45 @@ public class ResultsListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        setAverangeStatisticsInFields(results);
+    }
+
+    private void setAverangeStatisticsInFields(List<RunResult> results) {
+        if (results != null) {
+            double overallDistance = getOverallDistance(results);
+            long overallTime = getOverallTime(results);
+            int resultsAmount = results.size();
+
+            double avgDistance = overallDistance / (double) resultsAmount;
+            long avgTime = overallTime / resultsAmount;
+            double avgSpeed = TrackUtils.getSpeedBetweenEvents(overallDistance, overallTime);
+
+
+            DecimalFormat df = new DecimalFormat("#.##");
+            String avgDistanceString = df.format(avgDistance)+" "+getString(R.string.distanceUnits);
+            String avgTimeString = Timer.getTimeInFormat(avgTime);
+            String avgSpeedString = df.format(avgSpeed)+" "+getString(R.string.speedUnits);
+
+            avgDistanceLabel.setText(avgDistanceString);
+            avgSpeedLabel.setText(avgSpeedString);
+            avgTimeLabel.setText(avgTimeString);
+        }
+    }
+
+    private double getOverallDistance(List<RunResult> results) {
+        double distance = 0.0;
+        for (RunResult result : results) {
+            distance += result.getDistance();
+        }
+        return distance;
+    }
+
+    private long getOverallTime(List<RunResult> results) {
+        long overalTime = 0;
+        for (RunResult result : results) {
+            overalTime += result.getTime();
+        }
+        return overalTime;
     }
 
     private List<RunResult> getResultsFromDatabase() {

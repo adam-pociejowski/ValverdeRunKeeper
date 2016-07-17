@@ -1,7 +1,10 @@
-package com.example.valverde.valverderunkeeper.running;
+package com.example.valverde.valverderunkeeper.running.tempo_chart;
 
 import android.content.Context;
 
+import com.example.valverde.valverderunkeeper.running.GPSEvent;
+import com.example.valverde.valverderunkeeper.running.TrackUtils;
+import com.example.valverde.valverderunkeeper.running.tempo_chart.TempoChart;
 import com.github.mikephil.charting.charts.LineChart;
 import java.util.ArrayList;
 

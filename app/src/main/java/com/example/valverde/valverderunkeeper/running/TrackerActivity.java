@@ -28,15 +28,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class TrackerActivity extends AppCompatActivity {
-    private com.example.valverde.valverderunkeeper.settings.Settings settings;
+    private static volatile TrackerActivity instance = null;
     private static final String TAG = "TrackerActivity";
     private LocationManager locationManager;
     private LocationListener locationListener;
     private String runningState = "init";
     private Timer timerThread;
     private Handler handler;
-    private static volatile TrackerActivity instance = null;
     private UpdateManager updateManager;
+    private com.example.valverde.valverderunkeeper.settings.Settings settings;
     @BindView(R.id.accuracyProgressBar) ProgressBar accuracyProgressBar;
     @BindView(R.id.speedField) TextView speedField;
     @BindView(R.id.distanceField) TextView distanceField;
@@ -88,9 +88,9 @@ public class TrackerActivity extends AppCompatActivity {
                     result.setRoute(route);
                     timerThread = null;
                     if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                                ActivityCompat.checkSelfPermission(getApplicationContext(),
-                                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                            ActivityCompat.checkSelfPermission(getApplicationContext(),
+                                    Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         locationManager.removeUpdates(locationListener);
                     }
                     Intent intent = new Intent(getApplicationContext(), FinalizeRunActivity.class);
@@ -115,25 +115,26 @@ public class TrackerActivity extends AppCompatActivity {
                     double averangeSpeed = utils.getAverangeSpeedInKmH(gpsEvent);
                     double distance = utils.getOverallDistance();
                     DecimalFormat decimalFormat = new DecimalFormat("#.##");
-                    String averangeSpeedInFormat = decimalFormat.format(averangeSpeed)+
-                            " "+getString(R.string.speedUnits);
-                    String overallDistanceInFormat = decimalFormat.format(distance)+
-                            " "+getString(R.string.distanceUnits);
+                    String averangeSpeedInFormat = decimalFormat.format(averangeSpeed) +
+                            " " + getString(R.string.speedUnits);
+                    String overallDistanceInFormat = decimalFormat.format(distance) +
+                            " " + getString(R.string.distanceUnits);
                     speedField.setText(averangeSpeedInFormat);
                     distanceField.setText(overallDistanceInFormat);
                     updateManager.notifyDistance(distance);
 
-                    /*** DEBUG ****/
-                    Log.d(TAG, "LAT: "+location.getLatitude()+"|  LNG: "+location.getLongitude()+
-                            "  |  SPEED: "+averangeSpeedInFormat+" km/h  |  ACCURACY: "+signalAccuracy);
+                    Log.d(TAG, "LAT: " + location.getLatitude() + "|  LNG: " + location.getLongitude() +
+                            "  |  SPEED: " + averangeSpeedInFormat + " km/h  |  ACCURACY: " + signalAccuracy);
                 }
             }
 
             @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
 
             @Override
-            public void onProviderEnabled(String provider) {}
+            public void onProviderEnabled(String provider) {
+            }
 
             @Override
             public void onProviderDisabled(String provider) {
@@ -146,9 +147,8 @@ public class TrackerActivity extends AppCompatActivity {
                 requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION,
                         android.Manifest.permission.INTERNET}, 10);
             }
-        }
-        else locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                            settings.getEventsRefreshTimeInSeconds()*1000, 0, locationListener);
+        } else locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                settings.getEventsRefreshTimeInSeconds() * 1000, 0, locationListener);
     }
 
     public void onScreenChangeState(String msg) {
@@ -157,15 +157,16 @@ public class TrackerActivity extends AppCompatActivity {
                 pauseTracker();
                 updateManager.speak("Paused");
             }
-        }
-        else if (msg.equals("SCREEN_OFF")) {
+        } else if (msg.equals("SCREEN_OFF")) {
             if (runningState.equals("init"))
                 runningState = "ready";
             else {
                 if (runningState.equals("ready"))
                     initTracker();
-                startTracker();
-                updateManager.speak("Started");
+                if (runningState.equals("ready") || runningState.equals("paused")) {
+                    startTracker();
+                    updateManager.speak("Started");
+                }
             }
         }
     }
@@ -173,6 +174,13 @@ public class TrackerActivity extends AppCompatActivity {
     private void initTracker() {
         timerThread = new Timer(handler, timerField);
         timerThread.start();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        GPSEvent event = new GPSEvent(System.currentTimeMillis(), location.getLatitude(),
+                location.getLongitude(), location.getAccuracy());
+        TrackUtils.getInstance().addEvent(event);
     }
 
     private void pauseTracker() {

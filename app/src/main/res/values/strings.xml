@@ -48,6 +48,7 @@
     <string name="presentationDistanceLabel">Distance</string>
     <string name="presentationTimeLabel">Time</string>
     <string name="presentationAVGSpeedLabel">Speed</string>
+    <string name="presentationAVGLabel">Averange</string>
 
     <!-- Settings -->
     <string name="appSettingsLabel">Application Settings</string>

@@ -4,16 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import com.example.valverde.valverderunkeeper.R;
 import com.example.valverde.valverderunkeeper.notifications.RunningSpeaker;
 import com.example.valverde.valverderunkeeper.notifications.SpeakingManager;
+import com.example.valverde.valverderunkeeper.running.tempo_chart.TempoChartChangeNotifier;
 import com.example.valverde.valverderunkeeper.settings.Settings;
 import com.example.valverde.valverderunkeeper.settings.SettingsManager;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class UpdateManager {
     private TrackerBroadcasterReceiver receiver;

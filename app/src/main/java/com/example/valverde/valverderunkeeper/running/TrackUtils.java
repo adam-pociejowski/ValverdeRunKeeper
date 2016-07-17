@@ -48,9 +48,14 @@ public class TrackUtils {
         return 6367 * c;
     }
 
+    public void addEvent(GPSEvent event) {
+        actualGPSEvents.add(event);
+        route.add(event);
+    }
+
     public double getAverangeSpeedInKmH(GPSEvent newEvent) {
         if (actualGPSEvents.size() <= 1) {
-            actualGPSEvents.add(newEvent);
+            addEvent(newEvent);
             return  0.0;
         }
         GPSEvent lastEvent = actualGPSEvents.get(actualGPSEvents.size() - 1);
@@ -61,9 +66,7 @@ public class TrackUtils {
             if (actualGPSEvents.size() >= settings.getAmountOfEventsInAverangeSpeed())
                 actualGPSEvents.remove(0);
 
-            actualGPSEvents.add(newEvent);
-//            if (eventsCounter++ % EVENTS_PER_POINT_ON_ROUTE_MAP == 0)
-            route.add(newEvent);
+            addEvent(newEvent);
             double travelDistance = 0.0;
             for (int i = 0; i < actualGPSEvents.size() - 1; i++) {
                 GPSEvent earlierEvent = actualGPSEvents.get(i);
@@ -121,7 +124,7 @@ public class TrackUtils {
         return route;
     }
 
-    public double getSpeedBetweenEvents(double distanceBetween, long timeBetween) {
+    public static double getSpeedBetweenEvents(double distanceBetween, long timeBetween) {
         return distanceBetween / ((double) timeBetween / HOUR_FACTOR);
     }
 

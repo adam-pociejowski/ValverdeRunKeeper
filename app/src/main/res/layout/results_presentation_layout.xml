@@ -51,9 +51,51 @@
     </LinearLayout>
 
     <ListView android:id="@+id/resultsPresentationListView"
+        android:padding="5dp"
+        android:layout_weight="2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+    </ListView>
+
+    <LinearLayout
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
+        android:background="@color/darkGreen"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </ListView>
+        android:layout_height="wrap_content">
+
+        <TextView android:id="@+id/avgLabel"
+            style="@style/statisticsFont"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:layout_weight="5"
+            android:text="@string/presentationAVGLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <TextView android:id="@+id/avgDistanceLabel"
+            style="@style/presentationListViewItemFont"
+            android:gravity="end|center"
+            android:textColor="@color/white"
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <TextView android:id="@+id/avgTimeLabel"
+            style="@style/presentationListViewItemFont"
+            android:gravity="end|center"
+            android:textColor="@color/white"
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <TextView android:id="@+id/avgSpeedLabel"
+            style="@style/presentationListViewItemFont"
+            android:gravity="end|center"
+            android:textColor="@color/white"
+            android:layout_weight="3.5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </LinearLayout>

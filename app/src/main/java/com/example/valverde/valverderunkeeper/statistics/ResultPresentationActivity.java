@@ -5,9 +5,12 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import com.example.valverde.valverderunkeeper.R;
 import com.example.valverde.valverderunkeeper.data.DatabaseGPSEventsHelper;
+import com.example.valverde.valverderunkeeper.data.DatabaseRunResultsHelper;
 import com.example.valverde.valverderunkeeper.running.GPSEvent;
 import com.example.valverde.valverderunkeeper.running.Timer;
 import com.example.valverde.valverderunkeeper.running.processing_result.RunResult;
@@ -37,6 +40,7 @@ public class ResultPresentationActivity extends AppCompatActivity {
     @BindView(R.id.dateField) TextView dateField;
     @BindView(R.id.copperTestField) TextView copperTestField;
     @BindView(R.id.accuracyField) TextView accuracyField;
+    @BindView(R.id.deleteButton) Button deleteButton;
     private GoogleMap map;
 
     @Override
@@ -64,6 +68,18 @@ public class ResultPresentationActivity extends AppCompatActivity {
             Log.e("ResultPresentation", "Not enough events for result: "+result.getResultId());
 
         setResultParamsInTextViews(result, events);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                long deletingResultId = result.getResultId();
+                DatabaseRunResultsHelper db = new DatabaseRunResultsHelper(getApplicationContext());
+                dh.removeRoute(deletingResultId);
+                db.removeResult(deletingResultId);
+                Intent i = new Intent(getApplicationContext(), ResultsListActivity.class);
+                startActivity(i);
+                finish();
+            }
+        });
     }
 
     private void addMarkers(ArrayList<GPSEvent> events) {

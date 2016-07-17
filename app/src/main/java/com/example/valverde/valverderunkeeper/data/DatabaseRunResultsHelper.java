@@ -98,4 +98,11 @@ public class DatabaseRunResultsHelper extends SQLiteOpenHelper {
         c.close();
         return id;
     }
+
+    public void removeResult(long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String SQL = "delete from "+TABLE_NAME+
+                " where "+RESULT_ID_COL+"="+id;
+        db.execSQL(SQL);
+    }
 }
