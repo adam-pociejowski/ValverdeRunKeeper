@@ -38,7 +38,10 @@
     <string name="copperTestLabel">Copper test:</string>
     <string name="newResult">New Result</string>
     <string name="recordLabel">Record!</string>
-
+    <string name="improvedLabel">Improved!</string>
+    <string name="alertTitle">Are you sure to delete this result?</string>
+    <string name="okButton">OK</string>
+    <string name="cancelButton">Cancel</string>
     <string name="saveButton">SAVE</string>
     <string name="deleteButton">DELETE</string>
 

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import com.example.valverde.valverderunkeeper.running.processing_result.RunResult;
+import com.example.valverde.valverderunkeeper.running.processing_result.Result;
 import java.util.ArrayList;
 
 public class DatabaseRunResultsHelper extends SQLiteOpenHelper {
@@ -43,7 +43,7 @@ public class DatabaseRunResultsHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public boolean insertResult(RunResult result) {
+    public boolean insertResult(Result result) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(RESULT_ID_COL, result.getResultId());
@@ -56,12 +56,12 @@ public class DatabaseRunResultsHelper extends SQLiteOpenHelper {
         else return true;
     }
 
-    public ArrayList<RunResult> getAllResults() {
+    public ArrayList<Result> getAllResults() {
         SQLiteDatabase db = getReadableDatabase();
         String[] projection = { ID_COL, RESULT_ID_COL, TIME_COL, DISTANCE_COL, CALORIES_COL, DATE_COL };
         Cursor c = db.query(TABLE_NAME, projection, null, null, null, null, null);
 
-        ArrayList<RunResult> results = new ArrayList<>();
+        ArrayList<Result> results = new ArrayList<>();
         if (c.moveToFirst()) {
             do {
                 long resultId = c.getLong(1);
@@ -69,7 +69,7 @@ public class DatabaseRunResultsHelper extends SQLiteOpenHelper {
                 double distance = c.getDouble(3);
                 int calories = c.getInt(4);
                 long date = c.getLong(5);
-                RunResult result = new RunResult(time, distance, calories);
+                Result result = new Result(time, distance, calories);
                 result.setDate(date);
                 result.setResultId(resultId);
                 results.add(result);

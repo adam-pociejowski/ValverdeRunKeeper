@@ -4,11 +4,11 @@ import com.example.valverde.valverderunkeeper.settings.Settings;
 
 import java.util.ArrayList;
 
-public class TrackUtils {
+public class TrackerUtils {
     private double upperChangeFactor = 0.0, lowerChangeFactor = 0.0;
     private static final int EVENTS_PER_POINT_ON_ROUTE_MAP = 3;
     private static final double HOUR_FACTOR = 3600000.0;
-    private static volatile TrackUtils instance = null;
+    private static volatile TrackerUtils instance = null;
     private ArrayList<GPSEvent> route = new ArrayList<>();
     private ArrayList<GPSEvent> actualGPSEvents = new ArrayList<>();
     private static Settings settings;
@@ -17,7 +17,7 @@ public class TrackUtils {
     private int eventsCounter = 0;
 
 
-    private TrackUtils() {}
+    private TrackerUtils() {}
 
     public static void setSettings(Settings s) {
         settings = s;
@@ -132,9 +132,9 @@ public class TrackUtils {
         return overallDistance;
     }
 
-    public static TrackUtils getInstance() {
+    public static TrackerUtils getInstance() {
         if (instance == null)
-            instance = new TrackUtils();
+            instance = new TrackerUtils();
         return instance;
     }
 }

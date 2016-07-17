@@ -1,6 +1,8 @@
 package com.example.valverde.valverderunkeeper.running.processing_result;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,13 +16,18 @@ import com.example.valverde.valverderunkeeper.main_menu.MainMenuActivity;
 import com.example.valverde.valverderunkeeper.running.GPSEvent;
 import com.example.valverde.valverderunkeeper.running.Timer;
 import com.example.valverde.valverderunkeeper.statistics.ResultsSorter;
+import com.example.valverde.valverderunkeeper.statistics.StatisticsUtils;
+
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FinalizeRunActivity extends Activity {
+    private final String TAG = getClass().getSimpleName();
     @BindView(R.id.avgSpeedRecordLabel) TextView speedRecordLabel;
     @BindView(R.id.timeRecordLabel) TextView timeRecordLabel;
     @BindView(R.id.distanceRecordLabel) TextView distanceRecordLabel;
@@ -40,7 +47,8 @@ public class FinalizeRunActivity extends Activity {
         Intent intent = getIntent();
         final DatabaseRunResultsHelper db = new DatabaseRunResultsHelper(this);
         final DatabaseGPSEventsHelper dh = new DatabaseGPSEventsHelper(this);
-        final RunResult result = (RunResult) intent.getSerializableExtra("result");
+        final Result result = (Result) intent.getSerializableExtra("result");
+        result.setDate(new Date().getTime());
         hideRecordTextViews();
         setResultParamsInTextViews(result);
         checkForRecords(result, db);
@@ -48,25 +56,43 @@ public class FinalizeRunActivity extends Activity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Date date = new Date();
-                result.setDate(date.getTime());
                 long id = db.getMaxResultId()  +1;
                 result.setResultId(id);
                 for (GPSEvent e : result.getRoute()) {
                     e.setId(id);
                 }
-                db.insertResult(result);
-                dh.insertData(result.getRoute());
                 Intent i = new Intent(getApplicationContext(), MainMenuActivity.class);
                 startActivity(i);
+                db.insertResult(result);
+                dh.insertData(result.getRoute());
             }
         });
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), MainMenuActivity.class);
-                startActivity(i);
+                AlertDialog.Builder builder = new AlertDialog.Builder(FinalizeRunActivity.this);
+                DecimalFormat df = new DecimalFormat("#.##");
+                DateFormat datef = new SimpleDateFormat("dd-MM-yyyy");
+                String alertMessage = "Date: "+datef.format(result.getDate())+
+                        "\nDistance: "+df.format(result.getDistance())+" "
+                        +getString(R.string.distanceUnits)+
+                        "\nTime: "+Timer.getTimeInFormat(result.getTime());
+                builder.setMessage(alertMessage)
+                        .setTitle(getString(R.string.alertTitle));
+
+                builder.setPositiveButton(getString(R.string.okButton), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent i = new Intent(getApplicationContext(), MainMenuActivity.class);
+                        startActivity(i);
+                    }
+                });
+
+                builder.setNegativeButton(getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {}
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
     }
@@ -78,7 +104,7 @@ public class FinalizeRunActivity extends Activity {
         caloriesRecordLabel.setVisibility(View.INVISIBLE);
     }
 
-    private void setResultParamsInTextViews(RunResult result) {
+    private void setResultParamsInTextViews(Result result) {
         DecimalFormat df = new DecimalFormat("#.##");
         String timeInFormat = Timer.getTimeInFormat(result.getTime());
         double distance = result.getDistance();
@@ -90,39 +116,63 @@ public class FinalizeRunActivity extends Activity {
         avgSpeedField.setText(avgSpeedInFormat);
     }
 
-    public void checkForRecords(RunResult result, DatabaseRunResultsHelper db) {
+    public void checkForRecords(Result result, DatabaseRunResultsHelper db) {
         try {
-            ArrayList<RunResult> results = db.getAllResults();
-            checkIfIsDistanceRecord(results, result);
-            checkIfIsSpeedRecord(results, result);
-            checkIfIsTimeRecord(results, result);
+            ArrayList<Result> results = db.getAllResults();
+            checkForDistanceRecord(results, result);
+            checkForSpeedRecord(results, result);
+            checkForTimeRecord(results, result);
         }
         catch (IndexOutOfBoundsException e) {
             Log.e(this.getClass().getName(), "There isn't any previous results..");
         }
     }
 
-    private void checkIfIsDistanceRecord(ArrayList<RunResult> results, RunResult result) {
-        RunResult highest = ResultsSorter.getHighestByDistance(results);
+    private void checkForDistanceRecord(ArrayList<Result> results, Result result) {
+        Result highest = ResultsSorter.getHighestByDistance(results);
         if (result.getDistance() > highest.getDistance()) {
             distanceRecordLabel.setVisibility(View.VISIBLE);
             Log.d(getClass().getName(), "New distance record!");
         }
+        else {
+            double avgDistance = StatisticsUtils.getOverallAVGDistance(results);
+            if (result.getDistance() > avgDistance) {
+                distanceRecordLabel.setVisibility(View.VISIBLE);
+                distanceRecordLabel.setText(getString(R.string.improvedLabel));
+                distanceRecordLabel.setBackground(getDrawable(R.color.lime));
+            }
+        }
     }
 
-    private void checkIfIsSpeedRecord(ArrayList<RunResult> results, RunResult result) {
-        RunResult highest = ResultsSorter.getHighestBySpeed(results);
+    private void checkForSpeedRecord(ArrayList<Result> results, Result result) {
+        Result highest = ResultsSorter.getHighestBySpeed(results);
         if (result.getAvgSpeed() > highest.getAvgSpeed()) {
             speedRecordLabel.setVisibility(View.VISIBLE);
             Log.d(getClass().getName(), "New speed record!");
         }
+        else {
+            double avgSpeed = StatisticsUtils.getOverallAVGSpeed(results);
+            if (result.getAvgSpeed() > avgSpeed) {
+                speedRecordLabel.setVisibility(View.VISIBLE);
+                speedRecordLabel.setText(getString(R.string.improvedLabel));
+                speedRecordLabel.setBackground(getDrawable(R.color.lime));
+            }
+        }
     }
 
-    private void checkIfIsTimeRecord(ArrayList<RunResult> results, RunResult result) {
-        RunResult highest = ResultsSorter.getHighestByTime(results);
+    private void checkForTimeRecord(ArrayList<Result> results, Result result) {
+        Result highest = ResultsSorter.getHighestByTime(results);
         if (result.getTime() > highest.getTime()) {
             timeRecordLabel.setVisibility(View.VISIBLE);
             Log.d(getClass().getName(), "New time record!");
+        }
+        else {
+            double avgTime = StatisticsUtils.getOverallAVGTime(results);
+            if (result.getTime() > avgTime) {
+                timeRecordLabel.setVisibility(View.VISIBLE);
+                timeRecordLabel.setText(getString(R.string.improvedLabel));
+                timeRecordLabel.setBackground(getDrawable(R.color.lime));
+            }
         }
     }
 }

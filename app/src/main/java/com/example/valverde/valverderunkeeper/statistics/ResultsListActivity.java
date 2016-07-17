@@ -13,14 +13,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import com.example.valverde.valverderunkeeper.R;
 import com.example.valverde.valverderunkeeper.data.DatabaseRunResultsHelper;
-import com.example.valverde.valverderunkeeper.running.GPSEvent;
 import com.example.valverde.valverderunkeeper.running.Timer;
-import com.example.valverde.valverderunkeeper.running.TrackUtils;
-import com.example.valverde.valverderunkeeper.running.processing_result.RunResult;
+import com.example.valverde.valverderunkeeper.running.processing_result.Result;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import butterknife.BindView;
@@ -37,32 +34,28 @@ public class ResultsListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.results_presentation_layout);
         ButterKnife.bind(this);
-        final List<RunResult> results = getResultsFromDatabase();
+        final List<Result> results = getResultsFromDatabase();
         MyListViewAdapter myAdapter = new MyListViewAdapter(this.getApplicationContext());
         myAdapter.setResults(results);
         listView.setAdapter(myAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                RunResult result = results.get(i);
+                Result result = results.get(i);
                 Intent intent = new Intent(getApplicationContext(), ResultPresentationActivity.class);
                 intent.putExtra("result", result);
                 startActivity(intent);
+                finish();
             }
         });
         setAverangeStatisticsInFields(results);
     }
 
-    private void setAverangeStatisticsInFields(List<RunResult> results) {
+    private void setAverangeStatisticsInFields(List<Result> results) {
         if (results != null) {
-            double overallDistance = getOverallDistance(results);
-            long overallTime = getOverallTime(results);
-            int resultsAmount = results.size();
-
-            double avgDistance = overallDistance / (double) resultsAmount;
-            long avgTime = overallTime / resultsAmount;
-            double avgSpeed = TrackUtils.getSpeedBetweenEvents(overallDistance, overallTime);
-
+            double avgDistance = StatisticsUtils.getOverallAVGDistance(results);
+            long avgTime = StatisticsUtils.getOverallAVGTime(results);
+            double avgSpeed = StatisticsUtils.getOverallAVGSpeed(results);
 
             DecimalFormat df = new DecimalFormat("#.##");
             String avgDistanceString = df.format(avgDistance)+" "+getString(R.string.distanceUnits);
@@ -75,23 +68,7 @@ public class ResultsListActivity extends AppCompatActivity {
         }
     }
 
-    private double getOverallDistance(List<RunResult> results) {
-        double distance = 0.0;
-        for (RunResult result : results) {
-            distance += result.getDistance();
-        }
-        return distance;
-    }
-
-    private long getOverallTime(List<RunResult> results) {
-        long overalTime = 0;
-        for (RunResult result : results) {
-            overalTime += result.getTime();
-        }
-        return overalTime;
-    }
-
-    private List<RunResult> getResultsFromDatabase() {
+    private List<Result> getResultsFromDatabase() {
         DatabaseRunResultsHelper db = new DatabaseRunResultsHelper(getApplicationContext());
         return db.getAllResults();
     }
@@ -99,7 +76,7 @@ public class ResultsListActivity extends AppCompatActivity {
 
     class MyListViewAdapter extends BaseAdapter {
         private Context context;
-        private List<RunResult> results;
+        private List<Result> results;
 
         public MyListViewAdapter(Context context) { this.context = context; }
 
@@ -107,7 +84,7 @@ public class ResultsListActivity extends AppCompatActivity {
         public View getView(final int position, View convertView, ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View customView  = layoutInflater.inflate(R.layout.presentation_listview_item, parent, false);
-            RunResult result = results.get(position);
+            Result result = results.get(position);
             TextView numberField = (TextView) customView.findViewById(R.id.presentationListViewItemNumber);
             TextView dateField = (TextView) customView.findViewById(R.id.presentationListViewItemDate);
             TextView distanceField = (TextView) customView.findViewById(R.id.presentationListViewItemDistance);
@@ -137,7 +114,7 @@ public class ResultsListActivity extends AppCompatActivity {
             return customView;
         }
 
-        public void setResults(List<RunResult> results) {
+        public void setResults(List<Result> results) {
             this.results = results;
         }
 

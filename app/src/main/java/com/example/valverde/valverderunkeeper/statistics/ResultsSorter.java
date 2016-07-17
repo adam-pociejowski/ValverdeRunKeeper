@@ -1,13 +1,11 @@
 package com.example.valverde.valverderunkeeper.statistics;
 
-import android.util.Log;
-
-import com.example.valverde.valverderunkeeper.running.processing_result.RunResult;
+import com.example.valverde.valverderunkeeper.running.processing_result.Result;
 import java.util.ArrayList;
 
 public class ResultsSorter {
-    public static ArrayList<RunResult> sortByDistance(ArrayList<RunResult> results) {
-        RunResult key;
+    public static ArrayList<Result> sortByDistance(ArrayList<Result> results) {
+        Result key;
         int j;
         for (int i = 1; i < results.size(); i++) {
             j = i - 1;
@@ -21,8 +19,8 @@ public class ResultsSorter {
         return results;
     }
 
-    public static ArrayList<RunResult> sortByAvgSpeed(ArrayList<RunResult> results) {
-        RunResult key;
+    public static ArrayList<Result> sortByAvgSpeed(ArrayList<Result> results) {
+        Result key;
         int j;
         for (int i = 1; i < results.size(); i++) {
             j = i - 1;
@@ -36,8 +34,8 @@ public class ResultsSorter {
         return results;
     }
 
-    public static ArrayList<RunResult> sortByTime(ArrayList<RunResult> results) {
-        RunResult key;
+    public static ArrayList<Result> sortByTime(ArrayList<Result> results) {
+        Result key;
         int j;
         for (int i = 1; i < results.size(); i++) {
             j = i - 1;
@@ -51,8 +49,8 @@ public class ResultsSorter {
         return results;
     }
 
-    public static ArrayList<RunResult> sortByDate(ArrayList<RunResult> results) {
-        RunResult key;
+    public static ArrayList<Result> sortByDate(ArrayList<Result> results) {
+        Result key;
         int j;
         for (int i = 1; i < results.size(); i++) {
             j = i - 1;
@@ -66,9 +64,9 @@ public class ResultsSorter {
         return results;
     }
 
-    public static RunResult getHighestByDistance(ArrayList<RunResult> results) {
-        RunResult highest = null;
-        for (RunResult r : results) {
+    public static Result getHighestByDistance(ArrayList<Result> results) {
+        Result highest = null;
+        for (Result r : results) {
             if (highest == null)
                 highest = r;
             else if (highest.getDistance() < r.getDistance())
@@ -77,9 +75,9 @@ public class ResultsSorter {
         return highest;
     }
 
-    public static RunResult getHighestBySpeed(ArrayList<RunResult> results) {
-        RunResult highest = null;
-        for (RunResult r : results) {
+    public static Result getHighestBySpeed(ArrayList<Result> results) {
+        Result highest = null;
+        for (Result r : results) {
             if (highest == null)
                 highest = r;
             else if (highest.getAvgSpeed() < r.getAvgSpeed())
@@ -88,9 +86,9 @@ public class ResultsSorter {
         return highest;
     }
 
-    public static RunResult getHighestByTime(ArrayList<RunResult> results) {
-        RunResult highest = null;
-        for (RunResult r : results) {
+    public static Result getHighestByTime(ArrayList<Result> results) {
+        Result highest = null;
+        for (Result r : results) {
             if (highest == null)
                 highest = r;
             else if (highest.getTime() < r.getTime())

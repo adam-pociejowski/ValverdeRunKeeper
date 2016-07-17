@@ -5,7 +5,7 @@ import com.example.valverde.valverderunkeeper.running.GPSEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class RunResult implements Serializable {
+public class Result implements Serializable {
     private long time;
     private double distance;
     private int calories;
@@ -13,7 +13,7 @@ public class RunResult implements Serializable {
     private long resultId;
     private ArrayList<GPSEvent> route;
 
-    public RunResult(long time, double distance, int calories) {
+    public Result(long time, double distance, int calories) {
         this.time = time;
         this.distance = distance;
         this.calories = calories;

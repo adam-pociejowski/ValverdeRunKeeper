@@ -20,7 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.example.valverde.valverderunkeeper.R;
 import com.example.valverde.valverderunkeeper.running.processing_result.FinalizeRunActivity;
-import com.example.valverde.valverderunkeeper.running.processing_result.RunResult;
+import com.example.valverde.valverderunkeeper.running.processing_result.Result;
 import com.example.valverde.valverderunkeeper.settings.SettingsManager;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class TrackerActivity extends AppCompatActivity {
         instance = this;
         handler = new Handler();
         settings = SettingsManager.getSettings(this);
-        TrackUtils.setSettings(settings);
+        TrackerUtils.setSettings(settings);
         int progressBarColor = getResources().getColor(R.color.darkGreen);
         accuracyProgressBar.getProgressDrawable().setColorFilter(progressBarColor,
                 android.graphics.PorterDuff.Mode.SRC_IN);
@@ -79,12 +79,12 @@ public class TrackerActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (timerThread != null) {
                     timerThread.setRunning(false);
-                    TrackUtils utils = TrackUtils.getInstance();
+                    TrackerUtils utils = TrackerUtils.getInstance();
                     utils.addLastEventToRoute();
                     double distance = utils.getOverallDistance();
                     long overallTime = timerThread.getOverallTime();
                     ArrayList<GPSEvent> route = utils.getRoute();
-                    RunResult result = new RunResult(overallTime, distance, 0);
+                    Result result = new Result(overallTime, distance, 0);
                     result.setRoute(route);
                     timerThread = null;
                     if (ActivityCompat.checkSelfPermission(getApplicationContext(),
@@ -109,7 +109,7 @@ public class TrackerActivity extends AppCompatActivity {
                 setAccuracyProgressBarStatus(signalAccuracy);
 
                 if (runningState.equals("started")) {
-                    TrackUtils utils = TrackUtils.getInstance();
+                    TrackerUtils utils = TrackerUtils.getInstance();
                     GPSEvent gpsEvent = new GPSEvent(System.currentTimeMillis(), location.getLatitude(),
                             location.getLongitude(), location.getAccuracy());
                     double averangeSpeed = utils.getAverangeSpeedInKmH(gpsEvent);
@@ -180,7 +180,7 @@ public class TrackerActivity extends AppCompatActivity {
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         GPSEvent event = new GPSEvent(System.currentTimeMillis(), location.getLatitude(),
                 location.getLongitude(), location.getAccuracy());
-        TrackUtils.getInstance().addEvent(event);
+        TrackerUtils.getInstance().addEvent(event);
     }
 
     private void pauseTracker() {
