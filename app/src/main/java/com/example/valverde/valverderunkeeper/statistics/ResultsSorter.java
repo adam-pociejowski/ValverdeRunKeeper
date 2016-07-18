@@ -2,9 +2,10 @@ package com.example.valverde.valverderunkeeper.statistics;
 
 import com.example.valverde.valverderunkeeper.running.processing_result.Result;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ResultsSorter {
-    public static ArrayList<Result> sortByDistance(ArrayList<Result> results) {
+    public static List<Result> sortByDistance(List<Result> results) {
         Result key;
         int j;
         for (int i = 1; i < results.size(); i++) {
@@ -19,7 +20,7 @@ public class ResultsSorter {
         return results;
     }
 
-    public static ArrayList<Result> sortByAvgSpeed(ArrayList<Result> results) {
+    public static List<Result> sortByAvgSpeed(List<Result> results) {
         Result key;
         int j;
         for (int i = 1; i < results.size(); i++) {
@@ -34,7 +35,7 @@ public class ResultsSorter {
         return results;
     }
 
-    public static ArrayList<Result> sortByTime(ArrayList<Result> results) {
+    public static List<Result> sortByTime(List<Result> results) {
         Result key;
         int j;
         for (int i = 1; i < results.size(); i++) {
@@ -49,7 +50,7 @@ public class ResultsSorter {
         return results;
     }
 
-    public static ArrayList<Result> sortByDate(ArrayList<Result> results) {
+    public static List<Result> sortByDate(List<Result> results) {
         Result key;
         int j;
         for (int i = 1; i < results.size(); i++) {

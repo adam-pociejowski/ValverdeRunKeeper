@@ -59,7 +59,6 @@ public class TrackerActivity extends AppCompatActivity {
         accuracyProgressBar.getProgressDrawable().setColorFilter(progressBarColor,
                 android.graphics.PorterDuff.Mode.SRC_IN);
         updateManager = new UpdateManager(this, layout);
-
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -107,34 +106,31 @@ public class TrackerActivity extends AppCompatActivity {
             public void onLocationChanged(Location location) {
                 float signalAccuracy = location.getAccuracy();
                 setAccuracyProgressBarStatus(signalAccuracy);
-
                 if (runningState.equals("started")) {
                     TrackerUtils utils = TrackerUtils.getInstance();
                     GPSEvent gpsEvent = new GPSEvent(System.currentTimeMillis(), location.getLatitude(),
                             location.getLongitude(), location.getAccuracy());
-                    double averangeSpeed = utils.getAverangeSpeedInKmH(gpsEvent);
+                    double avgSpeed = utils.getAverangeSpeedInKmH(gpsEvent);
                     double distance = utils.getOverallDistance();
                     DecimalFormat decimalFormat = new DecimalFormat("#.##");
-                    String averangeSpeedInFormat = decimalFormat.format(averangeSpeed) +
+                    String avgSpeedInFormat = decimalFormat.format(avgSpeed) +
                             " " + getString(R.string.speedUnits);
                     String overallDistanceInFormat = decimalFormat.format(distance) +
                             " " + getString(R.string.distanceUnits);
-                    speedField.setText(averangeSpeedInFormat);
+                    speedField.setText(avgSpeedInFormat);
                     distanceField.setText(overallDistanceInFormat);
                     updateManager.notifyDistance(distance);
 
                     Log.d(TAG, "LAT: " + location.getLatitude() + "|  LNG: " + location.getLongitude() +
-                            "  |  SPEED: " + averangeSpeedInFormat + " km/h  |  ACCURACY: " + signalAccuracy);
+                            "  |  SPEED: " + avgSpeedInFormat + " km/h  |  ACCURACY: " + signalAccuracy);
                 }
             }
 
             @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
 
             @Override
-            public void onProviderEnabled(String provider) {
-            }
+            public void onProviderEnabled(String provider) {}
 
             @Override
             public void onProviderDisabled(String provider) {
@@ -228,7 +224,6 @@ public class TrackerActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         updateManager.close();
-        Log.d(TAG, "onDestroy()");
     }
 
     public static TrackerActivity getInstance() {

@@ -28,6 +28,11 @@ public class ResultsListActivity extends AppCompatActivity {
     @BindView(R.id.avgDistanceLabel) TextView avgDistanceLabel;
     @BindView(R.id.avgTimeLabel) TextView avgTimeLabel;
     @BindView(R.id.avgSpeedLabel) TextView avgSpeedLabel;
+    @BindView(R.id.presentationDateLabel) TextView dateTopLabel;
+    @BindView(R.id.presentationDistanceLabel) TextView distanceTopLabel;
+    @BindView(R.id.presentationAvgSpeedLabel) TextView avgSpeedTopLabel;
+    @BindView(R.id.presentationTimeLabel) TextView timeTopLabel;
+    private MyListViewAdapter myAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +40,7 @@ public class ResultsListActivity extends AppCompatActivity {
         setContentView(R.layout.results_presentation_layout);
         ButterKnife.bind(this);
         final List<Result> results = getResultsFromDatabase();
-        MyListViewAdapter myAdapter = new MyListViewAdapter(this.getApplicationContext());
+        myAdapter = new MyListViewAdapter(this.getApplicationContext());
         myAdapter.setResults(results);
         listView.setAdapter(myAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -49,6 +54,45 @@ public class ResultsListActivity extends AppCompatActivity {
             }
         });
         setAverangeStatisticsInFields(results);
+        setTopLabelsOnClickListeners(results);
+    }
+
+    private void setTopLabelsOnClickListeners(final List<Result> results) {
+        dateTopLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<Result> sortedResults = ResultsSorter.sortByDate(results);
+                myAdapter.setResults(sortedResults);
+                myAdapter.notifyDataSetChanged();
+            }
+        });
+
+        distanceTopLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<Result> sortedResults = ResultsSorter.sortByDistance(results);
+                myAdapter.setResults(sortedResults);
+                myAdapter.notifyDataSetChanged();
+            }
+        });
+
+        avgSpeedTopLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<Result> sortedResults = ResultsSorter.sortByAvgSpeed(results);
+                myAdapter.setResults(sortedResults);
+                myAdapter.notifyDataSetChanged();
+            }
+        });
+
+        timeTopLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<Result> sortedResults = ResultsSorter.sortByTime(results);
+                myAdapter.setResults(sortedResults);
+                myAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void setAverangeStatisticsInFields(List<Result> results) {
@@ -107,10 +151,8 @@ public class ResultsListActivity extends AppCompatActivity {
             long timeInMillis = result.getTime();
             String timeInFormat = Timer.getTimeInFormat(timeInMillis);
             timeField.setText(timeInFormat);
-
             String speed = df.format(result.getAvgSpeed())+" "+getString(R.string.speedUnits);
             speedField.setText(speed);
-
             return customView;
         }
 
