@@ -68,7 +68,6 @@ public class TrackerActivity extends AppCompatActivity {
                 } else if (runningState.equals("started")) {
                     pauseTracker();
                 } else if (runningState.equals("paused")) {
-                    timerThread.unpause();
                     startTracker();
                 }
             }
@@ -110,7 +109,7 @@ public class TrackerActivity extends AppCompatActivity {
                     TrackerUtils utils = TrackerUtils.getInstance();
                     GPSEvent gpsEvent = new GPSEvent(System.currentTimeMillis(), location.getLatitude(),
                             location.getLongitude(), location.getAccuracy());
-                    double avgSpeed = utils.getAverangeSpeedInKmH(gpsEvent);
+                    double avgSpeed = utils.getAvgSpeedInKmH(gpsEvent);
                     double distance = utils.getOverallDistance();
                     DecimalFormat decimalFormat = new DecimalFormat("#.##");
                     String avgSpeedInFormat = decimalFormat.format(avgSpeed) +
@@ -186,6 +185,7 @@ public class TrackerActivity extends AppCompatActivity {
     }
 
     private void startTracker() {
+        timerThread.unpause();
         runningState = "started";
         startButton.setImageResource(R.drawable.pause_black);
     }

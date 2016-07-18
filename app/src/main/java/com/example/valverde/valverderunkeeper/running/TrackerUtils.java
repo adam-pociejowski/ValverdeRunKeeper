@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 public class TrackerUtils {
     private double upperChangeFactor = 0.0, lowerChangeFactor = 0.0;
-    private static final int EVENTS_PER_POINT_ON_ROUTE_MAP = 3;
     private static final double HOUR_FACTOR = 3600000.0;
     private static volatile TrackerUtils instance = null;
     private ArrayList<GPSEvent> route = new ArrayList<>();
@@ -14,7 +13,6 @@ public class TrackerUtils {
     private static Settings settings;
     private double overallDistance = 0.0;
     private double lastKnownSpeed = 0.0;
-    private int eventsCounter = 0;
 
 
     private TrackerUtils() {}
@@ -23,17 +21,8 @@ public class TrackerUtils {
         settings = s;
     }
 
-//    public double getDistanceInKm(double lat1, double lng1, double lat2, double lng2) {
-//        double factor = Math.PI / 180.0;
-//        double dlng = (lng2 - lng1) * factor;
-//        double dlat = (lat2 - lat1) * factor;
-//        double a = Math.pow(Math.sin(dlat / 2.0), 2.0) + Math.cos(lat1 * factor) *
-//                Math.cos(lat2 * factor) * Math.pow(Math.sin(dlng / 2.0), 2.0);
-//        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
-//        return 6367 * c;
-//    }
-
     public double getDistanceInKm(GPSEvent firstEvent, GPSEvent secondEvent) {
+        final double R = 6367.0;
         double lat1 = firstEvent.getLat();
         double lng1 = firstEvent.getLng();
         double lat2 = secondEvent.getLat();
@@ -45,7 +34,7 @@ public class TrackerUtils {
         double a = Math.pow(Math.sin(dlat / 2.0), 2.0) + Math.cos(lat1 * factor) *
                 Math.cos(lat2 * factor) * Math.pow(Math.sin(dlng / 2.0), 2.0);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
-        return 6367 * c;
+        return R * c;
     }
 
     public void addEvent(GPSEvent event) {
@@ -53,7 +42,7 @@ public class TrackerUtils {
         route.add(event);
     }
 
-    public double getAverangeSpeedInKmH(GPSEvent newEvent) {
+    public double getAvgSpeedInKmH(GPSEvent newEvent) {
         if (actualGPSEvents.size() <= 1) {
             addEvent(newEvent);
             return  0.0;
