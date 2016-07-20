@@ -43,7 +43,7 @@ public class TrackerUtils {
     }
 
     public double getAvgSpeedInKmH(GPSEvent newEvent) {
-        if (actualGPSEvents.size() <= 1) {
+        if (actualGPSEvents.size() < 1) {
             addEvent(newEvent);
             return  0.0;
         }

@@ -7,19 +7,20 @@ public class SettingsManager {
     private static final String PREFERENCES_KEY = "com.example.valverde.valverderunkeeper.preferences";
 
     public static Settings getSettings(Context context) {
-        SharedPreferences preferences = context.getSharedPreferences(
+        SharedPreferences pref = context.getSharedPreferences(
                 PREFERENCES_KEY, Context.MODE_PRIVATE);
         Settings settings = new Settings();
-        settings.setDefaultZoom(preferences.getFloat("defaultZoom", 0f));
-        settings.setEventsRefreshTimeInSeconds(preferences.getInt("eventsRefreshTimeInSeconds", 0));
-        settings.setAmountOfEventsInAverangeSpeed(preferences.getInt("amountOfEventsInAverangeSpeed", 0));
-        settings.setMaxUpperChangeBetweenEvents((double) preferences.getInt("maxUpperChangeBetweenEvents", 0));
-        settings.setMaxLowerChangeBetweenEvents((double) preferences.getInt("maxLowerChangeBetweenEvents", 0));
-        settings.setMaxChangeIncreasePerMeasure((double) preferences.getInt("maxChangeIncreasePerMeasure", 0));
-        settings.setGpsAccuracyLimit(preferences.getFloat("gpsAccuracyLimit", 0f));
-        settings.setSoundNotifications(preferences.getBoolean("soundNotifications", false));
-        settings.setSoundNotificationDistanceInterval((double) preferences.getFloat("soundNotificationDistanceInterval", 0f));
-        settings.setScreenLockSupport(preferences.getBoolean("screenLockSupport", false));
+        settings.setDefaultZoom(pref.getFloat("defaultZoom", 0f));
+        settings.setEventsRefreshTimeInSeconds(pref.getInt("eventsRefreshTimeInSeconds", 0));
+        settings.setAmountOfEventsInAverangeSpeed(pref.getInt("amountOfEventsInAverangeSpeed", 0));
+        settings.setMaxUpperChangeBetweenEvents((double) pref.getInt("maxUpperChangeBetweenEvents", 0));
+        settings.setMaxLowerChangeBetweenEvents((double) pref.getInt("maxLowerChangeBetweenEvents", 0));
+        settings.setMaxChangeIncreasePerMeasure((double) pref.getInt("maxChangeIncreasePerMeasure", 0));
+        settings.setGpsAccuracyLimit(pref.getFloat("gpsAccuracyLimit", 0f));
+        settings.setSoundNotifications(pref.getBoolean("soundNotifications", false));
+        settings.setSoundNotificationDistanceInterval((double) pref.getFloat("soundNotificationDistanceInterval", 0f));
+        settings.setScreenLockSupport(pref.getBoolean("screenLockSupport", false));
+        settings.setDefaultPace((double) pref.getFloat("defaultPace", 0f));
         return settings;
     }
 
@@ -38,6 +39,7 @@ public class SettingsManager {
         editor.putBoolean("soundNotifications", settings.getSoundNotifications());
         editor.putFloat("soundNotificationDistanceInterval", (float) settings.getSoundNotificationDistanceInterval());
         editor.putBoolean("screenLockSupport", settings.isScreenLockSupport());
+        editor.putFloat("defaultPace", (float) settings.getDefaultPace());
         editor.apply();
     }
 
@@ -56,6 +58,7 @@ public class SettingsManager {
         editor.putBoolean("soundNotifications", true);
         editor.putFloat("soundNotificationDistanceInterval", 0.5f);
         editor.putBoolean("screenLockSupport", true);
+        editor.putFloat("defaultPace", 11f);
         editor.apply();
     }
 

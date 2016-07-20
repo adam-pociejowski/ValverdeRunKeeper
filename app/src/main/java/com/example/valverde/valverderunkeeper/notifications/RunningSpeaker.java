@@ -4,10 +4,11 @@ import android.content.Context;
 import com.example.valverde.valverderunkeeper.R;
 
 public class RunningSpeaker implements SpeakingManager {
-    private Speaker speaker;
     private int alreadyNotifiedTimes = 0;
     private double startDistance = 0.0;
     private double interval = 0.0;
+    private PaceMaker pacemaker = null;
+    private Speaker speaker;
     private Context context;
 
     public RunningSpeaker(Context context) {
@@ -22,7 +23,7 @@ public class RunningSpeaker implements SpeakingManager {
     }
 
     @Override
-    public void notifyDistance(double distance) {
+    public void notify(double distance, long timeElapsed) {
         int quotient = (int) ((distance - startDistance) / interval);
         if (quotient > alreadyNotifiedTimes) {
             int distanceInMeters = (int)((interval * (double) quotient) * 1000);
@@ -39,6 +40,11 @@ public class RunningSpeaker implements SpeakingManager {
                 notifyMessage += " "+metersPart+" "+context.getString(R.string.fullNameOfDistanceMetersUnits);
 
             speaker.speak(notifyMessage);
+            if (pacemaker != null) {
+                long expectedTime = pacemaker.getExpectedTimeInPoint(distance);
+                String pacemakerMsg = pacemaker.getDifferenceInSeconds(timeElapsed, expectedTime);
+                speaker.speak(pacemakerMsg);
+            }
             alreadyNotifiedTimes++;
         }
     }
@@ -56,5 +62,10 @@ public class RunningSpeaker implements SpeakingManager {
     @Override
     public void close() {
         speaker.close();
+    }
+
+    @Override
+    public void setPacemaker(PaceMaker pacemaker) {
+        this.pacemaker = pacemaker;
     }
 }

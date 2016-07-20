@@ -3,9 +3,11 @@ package com.example.valverde.valverderunkeeper.running;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import com.example.valverde.valverderunkeeper.R;
+import com.example.valverde.valverderunkeeper.notifications.PaceMaker;
 import com.example.valverde.valverderunkeeper.notifications.RunningSpeaker;
 import com.example.valverde.valverderunkeeper.notifications.SpeakingManager;
 import com.example.valverde.valverderunkeeper.running.tempo_chart.TempoChartChangeNotifier;
@@ -13,24 +15,30 @@ import com.example.valverde.valverderunkeeper.settings.Settings;
 import com.example.valverde.valverderunkeeper.settings.SettingsManager;
 
 public class UpdateManager {
+    private final String TAG = getClass().getSimpleName();
     private TrackerBroadcasterReceiver receiver;
     private SpeakingManager speakingManager;
     private TempoChartChangeNotifier tempoChartNotifier;
+    private boolean soundNotifications;
     private Settings settings;
     private Context context;
 
     public UpdateManager(Context context, RelativeLayout layout) {
         this.context = context;
         settings = SettingsManager.getSettings(context);
+        soundNotifications = settings.getSoundNotifications();
         startSpeakingManager();
         startTempoChartNotifier(layout);
         startTrackerReceiver();
+        Log.d(TAG, "Update manager created!");
     }
 
-    public void notifyDistance(double distance) {
-        if (settings.getSoundNotifications())
-            speakingManager.notifyDistance(distance);
+    public void notifyChange(double distance, long timeElapsed) {
+        if (soundNotifications) {
+            speakingManager.notify(distance, timeElapsed);
+        }
         tempoChartNotifier.notifyDistance(distance);
+        Log.d(TAG, "Change notified! Distance: "+distance+" Time: "+timeElapsed);
     }
 
     public void close() {
@@ -45,10 +53,8 @@ public class UpdateManager {
     }
 
     private void startSpeakingManager() {
-        if (settings.getSoundNotifications()) {
-            speakingManager = new RunningSpeaker(context);
-            speakingManager.setDistanceNotifyInterval(settings.getSoundNotificationDistanceInterval());
-        }
+        speakingManager = new RunningSpeaker(context);
+        speakingManager.setDistanceNotifyInterval(settings.getSoundNotificationDistanceInterval());
     }
 
     private void startTrackerReceiver() {
@@ -69,5 +75,14 @@ public class UpdateManager {
         params.addRule(RelativeLayout.ABOVE, R.id.bottomLayout);
         params.addRule(RelativeLayout.BELOW, R.id.topLayout);
         layout.addView(tempoChartNotifier.getChart(), params);
+    }
+
+    public void setPacemaker(PaceMaker pacemaker) {
+        speakingManager.setPacemaker(pacemaker);
+    }
+
+    public void setSoundNotifications(boolean soundNotifications) {
+        this.soundNotifications = soundNotifications;
+        Log.d(TAG, "Sound notifications status: "+soundNotifications);
     }
 }

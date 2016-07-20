@@ -35,6 +35,9 @@ public class SettingsActivity extends AppCompatActivity {
     @BindView(R.id.gpsSoundNotificationsDistanceIntervalUnitsField) TextView distIntervalUnits;
     @BindView(R.id.gpsNotificationCheckBox) CheckBox soundNotificationsCheckBox;
     @BindView(R.id.gpsScreenLockSupportCheckBox) CheckBox screenLockSupportBox;
+    @BindView(R.id.gpsDefaultPaceLabel) TextView defaultPaceLabel;
+    @BindView(R.id.gpsDefaultPaceField) EditText defaultPaceField;
+    @BindView(R.id.gpsDefaultPaceFieldUnits) TextView defaultPaceUnits;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +71,9 @@ public class SettingsActivity extends AppCompatActivity {
         soundNotificationsDistanceIntervalField.setEnabled(soundNotification);
         distIntervalLabel.setEnabled(soundNotification);
         distIntervalUnits.setEnabled(soundNotification);
+        defaultPaceLabel.setEnabled(soundNotification);
+        defaultPaceField.setEnabled(soundNotification);
+        defaultPaceUnits.setEnabled(soundNotification);
     }
 
     private void saveSettings() {
@@ -88,6 +94,7 @@ public class SettingsActivity extends AppCompatActivity {
             settings.setSoundNotificationDistanceInterval(
                     Double.parseDouble(soundNotificationsDistanceIntervalField.getText().toString()));
             settings.setScreenLockSupport(screenLockSupportBox.isChecked());
+            settings.setDefaultPace(Double.parseDouble(defaultPaceField.getText().toString()));
             SettingsManager.setSettings(settings, getApplicationContext());
         }
         catch (NumberFormatException e) {
@@ -110,6 +117,7 @@ public class SettingsActivity extends AppCompatActivity {
             boolean screenLockSupport = settings.isScreenLockSupport();
             DecimalFormat df = new DecimalFormat("#.##");
             String soundNotificationsDistInterval = df.format(settings.getSoundNotificationDistanceInterval());
+            String pace = df.format(settings.getDefaultPace());
 
             gpsAccuracyField.setText(accuracy);
             gpsEventsRefreshField.setText(refresh);
@@ -121,6 +129,7 @@ public class SettingsActivity extends AppCompatActivity {
             soundNotificationsCheckBox.setChecked(soundNotifications);
             soundNotificationsDistanceIntervalField.setText(soundNotificationsDistInterval);
             screenLockSupportBox.setChecked(screenLockSupport);
+            defaultPaceField.setText(pace);
         }
         catch (Exception e) {
             SettingsManager.setDefaultSettings(context);

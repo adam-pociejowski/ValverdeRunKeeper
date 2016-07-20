@@ -149,6 +149,32 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <TextView android:id="@+id/gpsDefaultPaceLabel"
+                    android:text="@string/gpsDefaultPace"
+                    style="@style/settingsFont"
+                    android:layout_weight="5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+
+                <EditText android:id="@+id/gpsDefaultPaceField"
+                    style="@style/settingsFont"
+                    android:layout_weight="2"
+                    android:gravity="end"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+
+                <TextView android:id="@+id/gpsDefaultPaceFieldUnits"
+                    android:text="@string/speedUnits"
+                    style="@style/settingsFont"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
                 <TextView android:text="@string/gpsDefaultMapZoom"
                     style="@style/settingsFont"
                     android:layout_weight="5"

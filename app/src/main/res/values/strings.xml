@@ -66,4 +66,14 @@
     <string name="gpsSoundNotificationsDistanceInterval">Distance interval:</string>
     <string name="gpsScreenLockSupport">Screen lock support:</string>
     <string name="gpsSaveSettingsButton">Save settings</string>
+    <string name="gpsDefaultPace">Default pace:</string>
+
+    <!--Pace menu items-->
+    <string name="paceMenu10">10.0</string>
+    <string name="paceMenu10.5">10.5</string>
+    <string name="paceMenu11">11.0</string>
+    <string name="paceMenu11.5">11.5</string>
+    <string name="paceMenu12">12.0</string>
+    <string name="paceMenu12.5">12.5</string>
+    <string name="paceMenu13">13.0</string>
 </resources>

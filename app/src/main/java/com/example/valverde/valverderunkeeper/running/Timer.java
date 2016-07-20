@@ -8,6 +8,7 @@ public class Timer extends Thread {
     private static final int HOUR_FACTOR = 3600000;
     private static final int MINUTE_FACTOR = 60000;
     private static final int SECOND_FACTOR = 1000;
+    private long lastLocationTime;
     private boolean running = false;
     private boolean paused = false;
     private long pauseTime = 0;
@@ -70,10 +71,6 @@ public class Timer extends Thread {
         return pauseTime;
     }
 
-    public long getOverallTime() {
-        return overallTime;
-    }
-
     private long checkIfIsPaused(long time) {
         synchronized (lock) {
             while (paused) {
@@ -99,6 +96,14 @@ public class Timer extends Thread {
             paused = false;
             lock.notify();
         }
+    }
+
+    public long getLastLocationTime() {
+        return lastLocationTime;
+    }
+
+    public void setLastLocationTime() {
+        this.lastLocationTime = overallTime;
     }
 
     public void setRunning(boolean running) {

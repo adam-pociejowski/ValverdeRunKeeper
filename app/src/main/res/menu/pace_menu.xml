@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/paceMenuItem1" android:title="@string/paceMenu10" />
+
+    <item android:id="@+id/paceMenuItem2" android:title="@string/paceMenu10.5" />
+
+    <item android:id="@+id/paceMenuItem3" android:title="@string/paceMenu11" />
+
+    <item android:id="@+id/paceMenuItem4" android:title="@string/paceMenu11.5" />
+
+    <item android:id="@+id/paceMenuItem5" android:title="@string/paceMenu12" />
+
+    <item android:id="@+id/paceMenuItem6" android:title="@string/paceMenu12.5" />
+
+    <item android:id="@+id/paceMenuItem7" android:title="@string/paceMenu13" />
+
+</menu>

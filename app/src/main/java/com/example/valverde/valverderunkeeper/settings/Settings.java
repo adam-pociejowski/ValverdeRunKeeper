@@ -11,6 +11,15 @@ public class Settings {
     private boolean soundNotifications;
     private double soundNotificationDistanceInterval;
     private boolean screenLockSupport;
+    private double defaultPace;
+
+    public double getDefaultPace() {
+        return defaultPace;
+    }
+
+    public void setDefaultPace(double defaultPace) {
+        this.defaultPace = defaultPace;
+    }
 
     public boolean isSoundNotifications() {
         return soundNotifications;

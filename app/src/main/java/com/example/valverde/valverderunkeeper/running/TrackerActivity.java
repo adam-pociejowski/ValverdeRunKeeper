@@ -12,13 +12,18 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.PopupMenu;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.example.valverde.valverderunkeeper.R;
+import com.example.valverde.valverderunkeeper.notifications.PaceMaker;
 import com.example.valverde.valverderunkeeper.running.processing_result.FinalizeRunActivity;
 import com.example.valverde.valverderunkeeper.running.processing_result.Result;
 import com.example.valverde.valverderunkeeper.settings.SettingsManager;
@@ -29,7 +34,7 @@ import butterknife.ButterKnife;
 
 public class TrackerActivity extends AppCompatActivity {
     private static volatile TrackerActivity instance = null;
-    private static final String TAG = "TrackerActivity";
+    private final String TAG = getClass().getSimpleName();
     private LocationManager locationManager;
     private LocationListener locationListener;
     private String runningState = "init";
@@ -37,6 +42,7 @@ public class TrackerActivity extends AppCompatActivity {
     private Handler handler;
     private UpdateManager updateManager;
     private com.example.valverde.valverderunkeeper.settings.Settings settings;
+    private boolean pacemakerSupport, soundSupport;
     @BindView(R.id.accuracyProgressBar) ProgressBar accuracyProgressBar;
     @BindView(R.id.speedField) TextView speedField;
     @BindView(R.id.distanceField) TextView distanceField;
@@ -45,20 +51,29 @@ public class TrackerActivity extends AppCompatActivity {
     @BindView(R.id.stopButton) ImageButton stopButton;
     @BindView(R.id.startButton) ImageButton startButton;
     @BindView(R.id.trackerMainLayout) RelativeLayout layout;
+    @BindView(R.id.paceButton) Button paceButton;
+    @BindView(R.id.pacemakerButton) ImageButton pacemakerButton;
+    @BindView(R.id.soundButton) ImageButton soundButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        instance = this;
         handler = new Handler();
+        instance = this;
         settings = SettingsManager.getSettings(this);
+        soundSupport = settings.getSoundNotifications();
+        pacemakerSupport = soundSupport;
+        setSoundNotificationButtonsListeners();
         TrackerUtils.setSettings(settings);
         int progressBarColor = getResources().getColor(R.color.darkGreen);
         accuracyProgressBar.getProgressDrawable().setColorFilter(progressBarColor,
                 android.graphics.PorterDuff.Mode.SRC_IN);
         updateManager = new UpdateManager(this, layout);
+        updateManager.setPacemaker(new PaceMaker(settings.getDefaultPace()));
+        createPopupMenu();
+
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,7 +95,7 @@ public class TrackerActivity extends AppCompatActivity {
                     TrackerUtils utils = TrackerUtils.getInstance();
                     utils.addLastEventToRoute();
                     double distance = utils.getOverallDistance();
-                    long overallTime = timerThread.getOverallTime();
+                    long overallTime = timerThread.getLastLocationTime();
                     ArrayList<GPSEvent> route = utils.getRoute();
                     Result result = new Result(overallTime, distance, 0);
                     result.setRoute(route);
@@ -106,6 +121,7 @@ public class TrackerActivity extends AppCompatActivity {
                 float signalAccuracy = location.getAccuracy();
                 setAccuracyProgressBarStatus(signalAccuracy);
                 if (runningState.equals("started")) {
+                    timerThread.setLastLocationTime();
                     TrackerUtils utils = TrackerUtils.getInstance();
                     GPSEvent gpsEvent = new GPSEvent(System.currentTimeMillis(), location.getLatitude(),
                             location.getLongitude(), location.getAccuracy());
@@ -118,7 +134,7 @@ public class TrackerActivity extends AppCompatActivity {
                             " " + getString(R.string.distanceUnits);
                     speedField.setText(avgSpeedInFormat);
                     distanceField.setText(overallDistanceInFormat);
-                    updateManager.notifyDistance(distance);
+                    updateManager.notifyChange(distance, timerThread.getLastLocationTime());
 
                     Log.d(TAG, "LAT: " + location.getLatitude() + "|  LNG: " + location.getLongitude() +
                             "  |  SPEED: " + avgSpeedInFormat + " km/h  |  ACCURACY: " + signalAccuracy);
@@ -144,6 +160,70 @@ public class TrackerActivity extends AppCompatActivity {
             }
         } else locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 settings.getEventsRefreshTimeInSeconds() * 1000, 0, locationListener);
+    }
+
+    private void setSoundNotificationButtonsListeners() {
+        soundButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (soundSupport) {
+                    soundSupport = false;
+                    soundButton.setImageResource(R.drawable.sound_inactive);
+                    pacemakerButton.setImageResource(R.drawable.pace_icon_inactive);
+                }
+                else {
+                    soundSupport = true;
+                    soundButton.setImageResource(R.drawable.sound_active);
+                    if (pacemakerSupport)
+                        pacemakerButton.setImageResource(R.drawable.pace_icon_active);
+                }
+                updateManager.setSoundNotifications(soundSupport);
+            }
+        });
+
+        pacemakerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (soundSupport) {
+                    if (pacemakerSupport) {
+                        pacemakerSupport = false;
+                        pacemakerButton.setImageResource(R.drawable.pace_icon_inactive);
+                        updateManager.setPacemaker(null);
+                    }
+                    else {
+                        pacemakerSupport = true;
+                        pacemakerButton.setImageResource(R.drawable.pace_icon_active);
+                        updateManager.setPacemaker(new PaceMaker(Double.parseDouble(
+                                paceButton.getText().toString())));
+                    }
+                }
+            }
+        });
+    }
+
+    private void createPopupMenu() {
+        double pace = settings.getDefaultPace();
+        String paceString = Double.toString(pace);
+        paceButton.setText(paceString);
+        paceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu menu = new PopupMenu(getApplicationContext(), paceButton);
+                MenuInflater inflater = menu.getMenuInflater();
+                inflater.inflate(R.menu.pace_menu, menu.getMenu());
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        String paceString = menuItem.getTitle().toString();
+                        double pace = Double.parseDouble(paceString);
+                        paceButton.setText(paceString);
+                        updateManager.setPacemaker(new PaceMaker(pace));
+                        return true;
+                    }
+                });
+                menu.show();
+            }
+        });
     }
 
     public void onScreenChangeState(String msg) {

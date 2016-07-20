@@ -30,6 +30,7 @@ public class Speaker {
     public void speak(String text) {
         if (isInitialized) {
             Log.i("Speaker", "speak: "+text);
+            while (tts.isSpeaking());
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
         }
         else {

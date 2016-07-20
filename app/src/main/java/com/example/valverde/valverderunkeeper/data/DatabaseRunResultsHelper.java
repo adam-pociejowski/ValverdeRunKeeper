@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
 import com.example.valverde.valverderunkeeper.running.processing_result.Result;
 import java.util.ArrayList;
 
@@ -102,6 +104,22 @@ public class DatabaseRunResultsHelper extends SQLiteOpenHelper {
     public void removeResult(long id) {
         SQLiteDatabase db = this.getWritableDatabase();
         String SQL = "delete from "+TABLE_NAME+
+                " where "+RESULT_ID_COL+"="+id;
+        db.execSQL(SQL);
+    }
+
+    public void updateTime(long id, long time) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String SQL = "update "+TABLE_NAME+
+                " set "+TIME_COL+"="+time+
+                " where "+RESULT_ID_COL+"="+id;
+        db.execSQL(SQL);
+    }
+
+    public void updateDist(long id, double dist) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String SQL = "update "+TABLE_NAME+
+                " set "+DISTANCE_COL+"="+dist+
                 " where "+RESULT_ID_COL+"="+id;
         db.execSQL(SQL);
     }
