@@ -2,58 +2,74 @@ package com.example.valverde.valverderunkeeper.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+import java.lang.reflect.Method;
+import java.util.Map;
 
 public class SettingsManager {
     private static final String PREFERENCES_KEY = "com.example.valverde.valverderunkeeper.preferences";
+    private final String TAG = getClass().getSimpleName();
+    private Context context;
 
-    public static Settings getSettings(Context context) {
-        SharedPreferences pref = context.getSharedPreferences(
-                PREFERENCES_KEY, Context.MODE_PRIVATE);
+    public SettingsManager(Context context) {
+        this.context = context;
+    }
+
+    public Settings getSettings() {
+        SharedPreferences pref = getPreferences();
+        Map<String, ?> prefMap = pref.getAll();
         Settings settings = new Settings();
-        settings.setDefaultZoom(pref.getFloat("defaultZoom", 0f));
-        settings.setEventsRefreshTimeInSeconds(pref.getInt("eventsRefreshTimeInSeconds", 0));
-        settings.setAmountOfEventsInAverangeSpeed(pref.getInt("amountOfEventsInAverangeSpeed", 0));
-        settings.setMaxUpperChangeBetweenEvents((double) pref.getInt("maxUpperChangeBetweenEvents", 0));
-        settings.setMaxLowerChangeBetweenEvents((double) pref.getInt("maxLowerChangeBetweenEvents", 0));
-        settings.setMaxChangeIncreasePerMeasure((double) pref.getInt("maxChangeIncreasePerMeasure", 0));
-        settings.setGpsAccuracyLimit(pref.getFloat("gpsAccuracyLimit", 0f));
-        settings.setSoundNotifications(pref.getBoolean("soundNotifications", false));
-        settings.setSoundNotificationDistanceInterval((double) pref.getFloat("soundNotificationDistanceInterval", 0f));
-        settings.setScreenLockSupport(pref.getBoolean("screenLockSupport", false));
-        settings.setDefaultPace((double) pref.getFloat("defaultPace", 0f));
+        for (Map.Entry<String, ?> entry : prefMap.entrySet()) {
+            String methodName = "set"+entry.getKey().substring(0,1).toUpperCase()+
+                    entry.getKey().substring(1);
+            Class paramType = entry.getValue().getClass();
+            try {
+                Method method = settings.getClass().getMethod(methodName, paramType);
+                method.invoke(settings, entry.getValue());
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+            }
+        }
         return settings;
     }
 
-    public static void setSettings(Settings settings, Context context) {
-        SharedPreferences preferences = context.getSharedPreferences(
-                PREFERENCES_KEY, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
+    public void setSettings(Settings settings) {
+        SharedPreferences pref = getPreferences();
+        SharedPreferences.Editor editor = pref.edit();
+        Map<String, ?> prefMap = pref.getAll();
 
-        editor.putFloat("defaultZoom", settings.getDefaultZoom());
-        editor.putInt("eventsRefreshTimeInSeconds", settings.getEventsRefreshTimeInSeconds());
-        editor.putInt("amountOfEventsInAverangeSpeed", settings.getAmountOfEventsInAverangeSpeed());
-        editor.putInt("maxUpperChangeBetweenEvents", (int) settings.getMaxUpperChangeBetweenEvents());
-        editor.putInt("maxLowerChangeBetweenEvents", (int) settings.getMaxLowerChangeBetweenEvents());
-        editor.putInt("maxChangeIncreasePerMeasure", (int) settings.getMaxChangeIncreasePerMeasure());
-        editor.putFloat("gpsAccuracyLimit", settings.getGpsAccuracyLimit());
-        editor.putBoolean("soundNotifications", settings.getSoundNotifications());
-        editor.putFloat("soundNotificationDistanceInterval", (float) settings.getSoundNotificationDistanceInterval());
-        editor.putBoolean("screenLockSupport", settings.isScreenLockSupport());
-        editor.putFloat("defaultPace", (float) settings.getDefaultPace());
+        for (Map.Entry<String, ?> entry : prefMap.entrySet()) {
+            String key = entry.getKey();
+            String methodName = "get"+key.substring(0,1).toUpperCase()+
+                    key.substring(1);
+            try {
+                Method method = settings.getClass().getMethod(methodName);
+                Object result  = method.invoke(settings);
+                if (result instanceof Integer) {
+                    editor.putInt(key, (int) result);
+                }
+                else if (result instanceof Float) {
+                    editor.putFloat(key, (float) result);
+                }
+                else if (result instanceof Boolean) {
+                    editor.putBoolean(key, (boolean) result);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+            }
+        }
         editor.apply();
     }
 
-    public static void setDefaultSettings(Context context) {
-        SharedPreferences preferences = context.getSharedPreferences(
-                PREFERENCES_KEY, Context.MODE_PRIVATE);
+    public void setDefaultSettings() {
+        SharedPreferences preferences = getPreferences();
         SharedPreferences.Editor editor = preferences.edit();
-
         editor.putFloat("defaultZoom", 16.0f);
-        editor.putInt("eventsRefreshTimeInSeconds", 3);
+        editor.putFloat("eventsRefreshTimeInSeconds", 3f);
         editor.putInt("amountOfEventsInAverangeSpeed", 4);
-        editor.putInt("maxUpperChangeBetweenEvents", 8);
-        editor.putInt("maxLowerChangeBetweenEvents", 8);
-        editor.putInt("maxChangeIncreasePerMeasure", 6);
+        editor.putFloat("maxUpperChangeBetweenEvents", 8f);
+        editor.putFloat("maxLowerChangeBetweenEvents", 8f);
+        editor.putFloat("maxChangeIncreasePerMeasure", 6f);
         editor.putFloat("gpsAccuracyLimit", 25.0f);
         editor.putBoolean("soundNotifications", true);
         editor.putFloat("soundNotificationDistanceInterval", 0.5f);
@@ -62,11 +78,15 @@ public class SettingsManager {
         editor.apply();
     }
 
-    public static void resetSettings(Context context) {
-        SharedPreferences preferences = context.getSharedPreferences(
-                PREFERENCES_KEY, Context.MODE_PRIVATE);
+    public void resetSettings() {
+        SharedPreferences preferences = getPreferences();
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
         editor.apply();
+    }
+
+    private SharedPreferences getPreferences() {
+        return context.getSharedPreferences(
+                PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 }

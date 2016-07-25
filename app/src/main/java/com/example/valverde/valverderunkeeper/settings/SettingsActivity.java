@@ -1,6 +1,5 @@
 package com.example.valverde.valverderunkeeper.settings;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -38,15 +37,19 @@ public class SettingsActivity extends AppCompatActivity {
     @BindView(R.id.gpsDefaultPaceLabel) TextView defaultPaceLabel;
     @BindView(R.id.gpsDefaultPaceField) EditText defaultPaceField;
     @BindView(R.id.gpsDefaultPaceFieldUnits) TextView defaultPaceUnits;
+    private final String TAG = getClass().getSimpleName();
+    private SettingsManager preferencesManager;
+    private Settings settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
-        final Settings settings = SettingsManager.getSettings(getApplicationContext());
-        setSettingsInFields(settings, this);
-        setActiveStatusSoundNotificationFields(settings);
+        preferencesManager = new SettingsManager(this);
+        settings = preferencesManager.getSettings();
+        setSettingsInFields();
+        setActiveStatusSoundNotificationFields();
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,12 +64,12 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 settings.setSoundNotifications(soundNotificationsCheckBox.isChecked());
-                setActiveStatusSoundNotificationFields(settings);
+                setActiveStatusSoundNotificationFields();
             }
         });
     }
 
-    private void setActiveStatusSoundNotificationFields(Settings settings) {
+    private void setActiveStatusSoundNotificationFields() {
         boolean soundNotification = settings.getSoundNotifications();
         soundNotificationsDistanceIntervalField.setEnabled(soundNotification);
         distIntervalLabel.setEnabled(soundNotification);
@@ -80,41 +83,42 @@ public class SettingsActivity extends AppCompatActivity {
         try {
             Settings settings = new Settings();
             settings.setGpsAccuracyLimit(Float.parseFloat(gpsAccuracyField.getText().toString()));
-            settings.setEventsRefreshTimeInSeconds(Integer.parseInt(gpsEventsRefreshField.getText().toString()));
+            settings.setEventsRefreshTimeInSeconds(Float.parseFloat(gpsEventsRefreshField.getText().toString()));
             settings.setDefaultZoom(Float.parseFloat(gpsDefaultMapZoomField.getText().toString()));
             settings.setAmountOfEventsInAverangeSpeed(Integer.parseInt(
                     gpsAmountOfEventsInAvgSpeedField.getText().toString()));
-            settings.setMaxChangeIncreasePerMeasure(Double.parseDouble(
+            settings.setMaxChangeIncreasePerMeasure(Float.parseFloat(
                     gpsChangeIncreasePerMeasureField.getText().toString()));
-            settings.setMaxUpperChangeBetweenEvents(Double.parseDouble(
+            settings.setMaxUpperChangeBetweenEvents(Float.parseFloat(
                     gpsMaxUpperChangeBetweenEventsField.getText().toString()));
-            settings.setMaxLowerChangeBetweenEvents(Double.parseDouble(
+            settings.setMaxLowerChangeBetweenEvents(Float.parseFloat(
                     gpsMaxLowerChangeBetweenEventsField.getText().toString()));
             settings.setSoundNotifications(soundNotificationsCheckBox.isChecked());
             settings.setSoundNotificationDistanceInterval(
-                    Double.parseDouble(soundNotificationsDistanceIntervalField.getText().toString()));
+                    Float.parseFloat(soundNotificationsDistanceIntervalField.getText().toString()));
             settings.setScreenLockSupport(screenLockSupportBox.isChecked());
-            settings.setDefaultPace(Double.parseDouble(defaultPaceField.getText().toString()));
-            SettingsManager.setSettings(settings, getApplicationContext());
+            settings.setDefaultPace(Float.parseFloat(defaultPaceField.getText().toString()));
+
+            preferencesManager.setSettings(settings);
         }
         catch (NumberFormatException e) {
             String message = "Wrong format of saving data";
             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-            Log.e("Settings Activity", "Wrong settings data to save");
+            Log.e(TAG, "Wrong settings data to save");
         }
     }
 
-    private void setSettingsInFields(Settings settings, Context context) {
+    private void setSettingsInFields() {
         try {
             String accuracy = Float.toString(settings.getGpsAccuracyLimit());
-            String refresh = Integer.toString(settings.getEventsRefreshTimeInSeconds());
+            String refresh = Float.toString(settings.getEventsRefreshTimeInSeconds());
             String defaultZoom = Float.toString(settings.getDefaultZoom());
             String amountOFEventsInAvSpeed = Integer.toString(settings.getAmountOfEventsInAverangeSpeed());
-            String maxUpperChange = Double.toString(settings.getMaxUpperChangeBetweenEvents());
-            String maxLowerChange = Double.toString(settings.getMaxLowerChangeBetweenEvents());
-            String changePerMeasure = Double.toString(settings.getMaxChangeIncreasePerMeasure());
+            String maxUpperChange = Float.toString(settings.getMaxUpperChangeBetweenEvents());
+            String maxLowerChange = Float.toString(settings.getMaxLowerChangeBetweenEvents());
+            String changePerMeasure = Float.toString(settings.getMaxChangeIncreasePerMeasure());
             boolean soundNotifications = settings.getSoundNotifications();
-            boolean screenLockSupport = settings.isScreenLockSupport();
+            boolean screenLockSupport = settings.getScreenLockSupport();
             DecimalFormat df = new DecimalFormat("#.##");
             String soundNotificationsDistInterval = df.format(settings.getSoundNotificationDistanceInterval());
             String pace = df.format(settings.getDefaultPace());
@@ -132,8 +136,10 @@ public class SettingsActivity extends AppCompatActivity {
             defaultPaceField.setText(pace);
         }
         catch (Exception e) {
-            SettingsManager.setDefaultSettings(context);
-            setSettingsInFields(SettingsManager.getSettings(context), context);
+            Log.e(TAG, "No data in preferences. Loading default values.");
+            preferencesManager.setDefaultSettings();
+            settings = preferencesManager.getSettings();
+            setSettingsInFields();
         }
     }
 }

@@ -47,6 +47,7 @@
 
                 <EditText android:id="@+id/gpsAccuracyField"
                     style="@style/settingsFont"
+                    android:inputType="number"
                     android:layout_weight="2"
                     android:gravity="end"
                     android:layout_width="0dp"
@@ -73,6 +74,7 @@
 
                 <EditText android:id="@+id/gpsEventsRefreshField"
                     style="@style/settingsFont"
+                    android:inputType="number"
                     android:layout_weight="2"
                     android:gravity="end"
                     android:layout_width="0dp"
@@ -132,6 +134,7 @@
 
                 <EditText android:id="@+id/gpsSoundNotificationsDistanceIntervalField"
                     style="@style/settingsFont"
+                    android:inputType="number"
                     android:layout_weight="2"
                     android:gravity="end"
                     android:layout_width="0dp"
@@ -158,6 +161,7 @@
 
                 <EditText android:id="@+id/gpsDefaultPaceField"
                     style="@style/settingsFont"
+                    android:inputType="number"
                     android:layout_weight="2"
                     android:gravity="end"
                     android:layout_width="0dp"
@@ -183,6 +187,7 @@
 
                 <EditText android:id="@+id/gpsDefaultMapZoomField"
                     style="@style/settingsFont"
+                    android:inputType="number"
                     android:layout_weight="2"
                     android:gravity="end"
                     android:layout_width="0dp"
@@ -204,6 +209,7 @@
 
                 <EditText android:id="@+id/gpsAmountOfEventsInAvgSpeedField"
                     style="@style/settingsFont"
+                    android:inputType="number"
                     android:layout_weight="2"
                     android:gravity="end"
                     android:layout_width="0dp"
@@ -225,6 +231,7 @@
 
                 <EditText android:id="@+id/gpsMaxUpperChangeBetweenEventsField"
                     style="@style/settingsFont"
+                    android:inputType="number"
                     android:layout_weight="2"
                     android:gravity="end"
                     android:layout_width="0dp"
@@ -251,6 +258,7 @@
 
                 <EditText android:id="@+id/gpsMaxLowerChangeBetweenEventsField"
                     style="@style/settingsFont"
+                    android:inputType="number"
                     android:layout_weight="2"
                     android:gravity="end"
                     android:layout_width="0dp"
@@ -277,6 +285,7 @@
 
                 <EditText android:id="@+id/gpsChangeIncreasePerMeasureField"
                     style="@style/settingsFont"
+                    android:inputType="number"
                     android:gravity="end"
                     android:layout_weight="2"
                     android:layout_width="0dp"

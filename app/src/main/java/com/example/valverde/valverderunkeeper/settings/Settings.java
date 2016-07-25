@@ -1,107 +1,103 @@
 package com.example.valverde.valverderunkeeper.settings;
 
 public class Settings {
-    private float defaultZoom;
-    private int eventsRefreshTimeInSeconds;
-    private int amountOfEventsInAverangeSpeed;
-    private double maxUpperChangeBetweenEvents;
-    private double maxLowerChangeBetweenEvents;
-    private double maxChangeIncreasePerMeasure;
-    private float gpsAccuracyLimit;
-    private boolean soundNotifications;
-    private double soundNotificationDistanceInterval;
-    private boolean screenLockSupport;
-    private double defaultPace;
+    private Float defaultZoom;
+    private Float eventsRefreshTimeInSeconds;
+    private Integer amountOfEventsInAverangeSpeed;
+    private Float maxUpperChangeBetweenEvents;
+    private Float maxLowerChangeBetweenEvents;
+    private Float maxChangeIncreasePerMeasure;
+    private Float gpsAccuracyLimit;
+    private Boolean soundNotifications;
+    private Float soundNotificationDistanceInterval;
+    private Boolean screenLockSupport;
+    private Float defaultPace;
 
-    public double getDefaultPace() {
-        return defaultPace;
-    }
-
-    public void setDefaultPace(double defaultPace) {
-        this.defaultPace = defaultPace;
-    }
-
-    public boolean isSoundNotifications() {
-        return soundNotifications;
-    }
-
-    public boolean isScreenLockSupport() {
-        return screenLockSupport;
-    }
-
-    public void setScreenLockSupport(boolean screenLockSupport) {
-        this.screenLockSupport = screenLockSupport;
-    }
-
-    public boolean getSoundNotifications() {
-        return soundNotifications;
-    }
-
-    public void setSoundNotifications(boolean soundNotifications) {
-        this.soundNotifications = soundNotifications;
-    }
-
-    public double getSoundNotificationDistanceInterval() {
-        return soundNotificationDistanceInterval;
-    }
-
-    public void setSoundNotificationDistanceInterval(double soundNotificationDistanceInterval) {
-        this.soundNotificationDistanceInterval = soundNotificationDistanceInterval;
-    }
-
-    public float getDefaultZoom() {
+    public Float getDefaultZoom() {
         return defaultZoom;
     }
 
-    public void setDefaultZoom(float defaultZoom) {
+    public void setDefaultZoom(Float defaultZoom) {
         this.defaultZoom = defaultZoom;
     }
 
-    public int getEventsRefreshTimeInSeconds() {
+    public Float getEventsRefreshTimeInSeconds() {
         return eventsRefreshTimeInSeconds;
     }
 
-    public void setEventsRefreshTimeInSeconds(int eventsRefreshTimeInSeconds) {
+    public void setEventsRefreshTimeInSeconds(Float eventsRefreshTimeInSeconds) {
         this.eventsRefreshTimeInSeconds = eventsRefreshTimeInSeconds;
     }
 
-    public int getAmountOfEventsInAverangeSpeed() {
+    public Integer getAmountOfEventsInAverangeSpeed() {
         return amountOfEventsInAverangeSpeed;
     }
 
-    public void setAmountOfEventsInAverangeSpeed(int amountOfEventsInAverangeSpeed) {
+    public void setAmountOfEventsInAverangeSpeed(Integer amountOfEventsInAverangeSpeed) {
         this.amountOfEventsInAverangeSpeed = amountOfEventsInAverangeSpeed;
     }
 
-    public double getMaxUpperChangeBetweenEvents() {
-        return maxUpperChangeBetweenEvents;
-    }
-
-    public void setMaxUpperChangeBetweenEvents(double maxUpperChangeBetweenEvents) {
-        this.maxUpperChangeBetweenEvents = maxUpperChangeBetweenEvents;
-    }
-
-    public double getMaxLowerChangeBetweenEvents() {
+    public Float getMaxLowerChangeBetweenEvents() {
         return maxLowerChangeBetweenEvents;
     }
 
-    public void setMaxLowerChangeBetweenEvents(double maxLowerChangeBetweenEvents) {
+    public void setMaxLowerChangeBetweenEvents(Float maxLowerChangeBetweenEvents) {
         this.maxLowerChangeBetweenEvents = maxLowerChangeBetweenEvents;
     }
 
-    public double getMaxChangeIncreasePerMeasure() {
+    public Float getMaxUpperChangeBetweenEvents() {
+        return maxUpperChangeBetweenEvents;
+    }
+
+    public void setMaxUpperChangeBetweenEvents(Float maxUpperChangeBetweenEvents) {
+        this.maxUpperChangeBetweenEvents = maxUpperChangeBetweenEvents;
+    }
+
+    public Float getMaxChangeIncreasePerMeasure() {
         return maxChangeIncreasePerMeasure;
     }
 
-    public void setMaxChangeIncreasePerMeasure(double maxChangeIncreasePerMeasure) {
+    public void setMaxChangeIncreasePerMeasure(Float maxChangeIncreasePerMeasure) {
         this.maxChangeIncreasePerMeasure = maxChangeIncreasePerMeasure;
     }
 
-    public float getGpsAccuracyLimit() {
+    public Float getGpsAccuracyLimit() {
         return gpsAccuracyLimit;
     }
 
-    public void setGpsAccuracyLimit(float gpsAccuracyLimit) {
+    public void setGpsAccuracyLimit(Float gpsAccuracyLimit) {
         this.gpsAccuracyLimit = gpsAccuracyLimit;
+    }
+
+    public Boolean getSoundNotifications() {
+        return soundNotifications;
+    }
+
+    public void setSoundNotifications(Boolean soundNotifications) {
+        this.soundNotifications = soundNotifications;
+    }
+
+    public Boolean getScreenLockSupport() {
+        return screenLockSupport;
+    }
+
+    public void setScreenLockSupport(Boolean screenLockSupport) {
+        this.screenLockSupport = screenLockSupport;
+    }
+
+    public Float getSoundNotificationDistanceInterval() {
+        return soundNotificationDistanceInterval;
+    }
+
+    public void setSoundNotificationDistanceInterval(Float soundNotificationDistanceInterval) {
+        this.soundNotificationDistanceInterval = soundNotificationDistanceInterval;
+    }
+
+    public Float getDefaultPace() {
+        return defaultPace;
+    }
+
+    public void setDefaultPace(Float defaultPace) {
+        this.defaultPace = defaultPace;
     }
 }

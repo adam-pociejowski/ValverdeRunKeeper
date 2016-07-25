@@ -62,7 +62,8 @@ public class TrackerActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         handler = new Handler();
         instance = this;
-        settings = SettingsManager.getSettings(this);
+        SettingsManager settingsManager = new SettingsManager(this);
+        settings = settingsManager.getSettings();
         soundSupport = settings.getSoundNotifications();
         pacemakerSupport = soundSupport;
         setSoundNotificationButtonsListeners();
@@ -158,8 +159,13 @@ public class TrackerActivity extends AppCompatActivity {
                 requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION,
                         android.Manifest.permission.INTERNET}, 10);
             }
-        } else locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                settings.getEventsRefreshTimeInSeconds() * 1000, 0, locationListener);
+        }
+        else {
+            float refreshTime = settings.getEventsRefreshTimeInSeconds();
+            int refreshTimeInMillis = (int) (refreshTime * 1000.0);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                     refreshTimeInMillis, 0, locationListener);
+        }
     }
 
     private void setSoundNotificationButtonsListeners() {
@@ -253,9 +259,13 @@ public class TrackerActivity extends AppCompatActivity {
             return;
         }
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        GPSEvent event = new GPSEvent(System.currentTimeMillis(), location.getLatitude(),
-                location.getLongitude(), location.getAccuracy());
-        TrackerUtils.getInstance().addEvent(event);
+        try {
+            GPSEvent event = new GPSEvent(System.currentTimeMillis(), location.getLatitude(),
+                    location.getLongitude(), location.getAccuracy());
+            TrackerUtils.getInstance().addEvent(event);
+        } catch (NullPointerException e) {
+            Log.e(TAG, "The isn't any last know location");
+        }
     }
 
     private void pauseTracker() {

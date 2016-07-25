@@ -25,7 +25,8 @@ public class UpdateManager {
 
     public UpdateManager(Context context, RelativeLayout layout) {
         this.context = context;
-        settings = SettingsManager.getSettings(context);
+        SettingsManager settingsManager = new SettingsManager(context);
+        settings = settingsManager.getSettings();
         soundNotifications = settings.getSoundNotifications();
         startSpeakingManager();
         startTempoChartNotifier(layout);
@@ -58,7 +59,7 @@ public class UpdateManager {
     }
 
     private void startTrackerReceiver() {
-        if (settings.isScreenLockSupport()) {
+        if (settings.getScreenLockSupport()) {
             IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
             filter.addAction(Intent.ACTION_SCREEN_OFF);
             filter.addAction(Intent.ACTION_ANSWER);

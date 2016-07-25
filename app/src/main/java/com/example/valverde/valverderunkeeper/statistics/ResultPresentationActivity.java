@@ -110,7 +110,8 @@ public class ResultPresentationActivity extends AppCompatActivity {
         double startLng = events.get(0).getLng();
         double endLat = events.get(events.size() - 1).getLat();
         double endLng = events.get(events.size() - 1).getLng();
-        Settings settings = SettingsManager.getSettings(this);
+        SettingsManager settingsManager = new SettingsManager(this);
+        Settings settings = settingsManager.getSettings();
         double centerLat = (startLat + endLat) / 2.0;
         double centerLng = (startLng + endLng) / 2.0;
         goToLocation(centerLat, centerLng, settings.getDefaultZoom());
