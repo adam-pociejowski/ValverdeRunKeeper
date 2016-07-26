@@ -11,8 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import com.example.valverde.valverderunkeeper.R;
-import com.example.valverde.valverderunkeeper.data.DatabaseGPSEventsHelper;
-import com.example.valverde.valverderunkeeper.data.DatabaseRunResultsHelper;
+import com.example.valverde.valverderunkeeper.data.DatabaseGPSEventsTable;
+import com.example.valverde.valverderunkeeper.data.DatabaseHelper;
+import com.example.valverde.valverderunkeeper.data.DatabaseRunResultsTable;
 import com.example.valverde.valverderunkeeper.main_menu.MainMenuActivity;
 import com.example.valverde.valverderunkeeper.running.GPSEvent;
 import com.example.valverde.valverderunkeeper.running.Timer;
@@ -52,9 +53,9 @@ public class ResultPresentationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_result_presentation);
         ButterKnife.bind(this);
         Intent intent = getIntent();
-        final DatabaseGPSEventsHelper dh = new DatabaseGPSEventsHelper(this);
+        final DatabaseHelper dbHelper = new DatabaseHelper(this);
         final Result result = (Result) intent.getSerializableExtra("result");
-        final ArrayList<GPSEvent> events = dh.getRoute(result.getResultId());
+        final ArrayList<GPSEvent> events = dbHelper.getRoute(result.getResultId());
         if (events == null)
             Log.e("ResultPresentation", "No route for result: "+result.getResultId());
         else if (events.size() > 1) {
@@ -87,9 +88,8 @@ public class ResultPresentationActivity extends AppCompatActivity {
                 builder.setPositiveButton(getString(R.string.okButton), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         long deletingResultId = result.getResultId();
-                        DatabaseRunResultsHelper db = new DatabaseRunResultsHelper(getApplicationContext());
-                        dh.removeRoute(deletingResultId);
-                        db.removeResult(deletingResultId);
+                        dbHelper.removeRoute(deletingResultId);
+                        dbHelper.removeResult(deletingResultId);
                         Intent i = new Intent(getApplicationContext(), MainMenuActivity.class);
                         startActivity(i);
                         finish();

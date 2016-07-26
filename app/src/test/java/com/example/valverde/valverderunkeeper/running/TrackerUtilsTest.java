@@ -1,7 +1,5 @@
 package com.example.valverde.valverderunkeeper.running;
 
-import com.example.valverde.valverderunkeeper.data.DatabaseGPSEventsHelper;
-
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;

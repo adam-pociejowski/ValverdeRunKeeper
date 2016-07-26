@@ -17,6 +17,12 @@ public class SettingsManager {
 
     public Settings getSettings() {
         SharedPreferences pref = getPreferences();
+        Float prefExist = pref.getFloat("defaultZoom", -1f);
+        /* First start of app when preferences doesn't exist */
+        if (prefExist == -1f) {
+            setDefaultSettings();
+            return getSettings();
+        }
         Map<String, ?> prefMap = pref.getAll();
         Settings settings = new Settings();
         for (Map.Entry<String, ?> entry : prefMap.entrySet()) {

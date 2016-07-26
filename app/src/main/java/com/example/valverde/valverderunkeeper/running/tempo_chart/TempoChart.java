@@ -2,6 +2,8 @@ package com.example.valverde.valverderunkeeper.running.tempo_chart;
 
 import android.content.Context;
 import android.graphics.Color;
+
+import com.example.valverde.valverderunkeeper.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -23,7 +25,7 @@ public class TempoChart {
         chart.setScaleEnabled(true);
         chart.setDrawGridBackground(false);
         chart.setPinchZoom(true);
-        chart.setBackgroundColor(Color.parseColor("#DCEDC8"));
+        chart.setBackgroundColor(Color.parseColor("#9CCC65"));
 
         LineData data = new LineData();
         data.setValueTextColor(Color.BLACK);

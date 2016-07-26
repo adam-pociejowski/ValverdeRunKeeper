@@ -67,8 +67,10 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <style name="settingsFont" parent="@android:style/TextAppearance.Medium">
+    <style name="settingsStyle" parent="@android:style/TextAppearance.Medium">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">20sp</item>
+        <item name="android:inputType">numberDecimal</item>
+        <item name="android:digits">0123456789.</item>
     </style>
 </resources>

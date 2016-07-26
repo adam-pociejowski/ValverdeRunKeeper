@@ -10,8 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import com.example.valverde.valverderunkeeper.R;
-import com.example.valverde.valverderunkeeper.data.DatabaseGPSEventsHelper;
-import com.example.valverde.valverderunkeeper.data.DatabaseRunResultsHelper;
+import com.example.valverde.valverderunkeeper.data.DatabaseGPSEventsTable;
+import com.example.valverde.valverderunkeeper.data.DatabaseHelper;
+import com.example.valverde.valverderunkeeper.data.DatabaseRunResultsTable;
 import com.example.valverde.valverderunkeeper.main_menu.MainMenuActivity;
 import com.example.valverde.valverderunkeeper.running.GPSEvent;
 import com.example.valverde.valverderunkeeper.running.Timer;
@@ -28,6 +29,7 @@ import butterknife.ButterKnife;
 
 public class FinalizeRunActivity extends Activity {
     private final String TAG = getClass().getSimpleName();
+    private DatabaseHelper dbHelper;
     @BindView(R.id.avgSpeedRecordLabel) TextView speedRecordLabel;
     @BindView(R.id.timeRecordLabel) TextView timeRecordLabel;
     @BindView(R.id.distanceRecordLabel) TextView distanceRecordLabel;
@@ -45,26 +47,19 @@ public class FinalizeRunActivity extends Activity {
         setContentView(R.layout.activity_finalize_run_layout);
         ButterKnife.bind(this);
         Intent intent = getIntent();
-        final DatabaseRunResultsHelper db = new DatabaseRunResultsHelper(this);
-        final DatabaseGPSEventsHelper dh = new DatabaseGPSEventsHelper(this);
+        dbHelper = new DatabaseHelper(this);
         final Result result = (Result) intent.getSerializableExtra("result");
         result.setDate(new Date().getTime());
         hideRecordTextViews();
         setResultParamsInTextViews(result);
-        checkForRecords(result, db);
+        checkForRecords(result);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                long id = db.getMaxResultId()  +1;
-                result.setResultId(id);
-                for (GPSEvent e : result.getRoute()) {
-                    e.setId(id);
-                }
                 Intent i = new Intent(getApplicationContext(), MainMenuActivity.class);
                 startActivity(i);
-                db.insertResult(result);
-                dh.insertData(result.getRoute());
+                dbHelper.insertResult(result);
             }
         });
 
@@ -116,14 +111,13 @@ public class FinalizeRunActivity extends Activity {
         avgSpeedField.setText(avgSpeedInFormat);
     }
 
-    public void checkForRecords(Result result, DatabaseRunResultsHelper db) {
+    public void checkForRecords(Result result) {
         try {
-            ArrayList<Result> results = db.getAllResults();
+            ArrayList<Result> results = dbHelper.getAllResults();
             checkForDistanceRecord(results, result);
             checkForSpeedRecord(results, result);
             checkForTimeRecord(results, result);
-        }
-        catch (IndexOutOfBoundsException e) {
+        } catch (Exception e) {
             Log.e(this.getClass().getName(), "There isn't any previous results..");
         }
     }

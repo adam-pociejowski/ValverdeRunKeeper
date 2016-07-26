@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.example.valverde.valverderunkeeper.running.GPSEvent;
 import java.util.ArrayList;
 
-public class DatabaseGPSEventsHelper extends SQLiteOpenHelper {
+public class DatabaseGPSEventsTable extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "valverdeRunKeeper.db";
     private static final int VERSION = 1;
     private static final String TABLE_NAME = "runningEvents";
@@ -28,7 +28,7 @@ public class DatabaseGPSEventsHelper extends SQLiteOpenHelper {
     public static final String SQL_DROP_QUERY = "DROP TABLE IF EXISTS "+TABLE_NAME;
 
 
-    public DatabaseGPSEventsHelper(Context context) {
+    public DatabaseGPSEventsTable(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
     }
 
@@ -82,27 +82,33 @@ public class DatabaseGPSEventsHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<GPSEvent> getRoute(long resultId) {
+        ArrayList<GPSEvent> events = null;
         SQLiteDatabase db = getReadableDatabase();
-        String SQL = "select * from "+TABLE_NAME+" where "+COL_2+"="+resultId;
-        Cursor c = db.rawQuery(SQL, null);
-        if (c.getCount() <= 0){
+        try {
+            String SQL = "select * from "+TABLE_NAME+" where "+COL_2+"="+resultId;
+            Cursor c = db.rawQuery(SQL, null);
+            if (c.getCount() <= 0){
+                c.close();
+                return null;
+            }
+            events = new ArrayList<>();
+            if (c.moveToFirst()) {
+                do {
+                    long id = c.getLong(1);
+                    long time = c.getLong(2);
+                    double lat = c.getDouble(3);
+                    double lng = c.getDouble(4);
+                    float accuracy = c.getFloat(5);
+                    GPSEvent event = new GPSEvent(time, lat, lng, accuracy);
+                    event.setId(id);
+                    events.add(event);
+                } while (c.moveToNext());
+            }
             c.close();
-            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.execSQL(SQL_CREATE_QUERY);
         }
-        ArrayList<GPSEvent> events = new ArrayList<>();
-        if (c.moveToFirst()) {
-            do {
-                long id = c.getLong(1);
-                long time = c.getLong(2);
-                double lat = c.getDouble(3);
-                double lng = c.getDouble(4);
-                float accuracy = c.getFloat(5);
-                GPSEvent event = new GPSEvent(time, lat, lng, accuracy);
-                event.setId(id);
-                events.add(event);
-            } while (c.moveToNext());
-        }
-        c.close();
         return events;
     }
 

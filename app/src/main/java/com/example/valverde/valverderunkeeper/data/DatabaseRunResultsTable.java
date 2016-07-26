@@ -10,7 +10,7 @@ import android.util.Log;
 import com.example.valverde.valverderunkeeper.running.processing_result.Result;
 import java.util.ArrayList;
 
-public class DatabaseRunResultsHelper extends SQLiteOpenHelper {
+public class DatabaseRunResultsTable extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "valverdeRunKeeper.db";
     private static final int VERSION = 1;
     private static final String TABLE_NAME = "results";
@@ -29,14 +29,13 @@ public class DatabaseRunResultsHelper extends SQLiteOpenHelper {
             DATE_COL+" INTEGER)";
     public static final String SQL_DROP_QUERY = "DROP TABLE IF EXISTS "+TABLE_NAME;
 
-    public DatabaseRunResultsHelper(Context context) {
+    public DatabaseRunResultsTable(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(SQL_CREATE_QUERY);
-
     }
 
     @Override
@@ -63,8 +62,8 @@ public class DatabaseRunResultsHelper extends SQLiteOpenHelper {
         String[] projection = { ID_COL, RESULT_ID_COL, TIME_COL, DISTANCE_COL, CALORIES_COL, DATE_COL };
         Cursor c = db.query(TABLE_NAME, projection, null, null, null, null, null);
 
-        ArrayList<Result> results = new ArrayList<>();
         if (c.moveToFirst()) {
+            ArrayList<Result> results = new ArrayList<>();
             do {
                 long resultId = c.getLong(1);
                 long time = c.getLong(2);
@@ -76,8 +75,9 @@ public class DatabaseRunResultsHelper extends SQLiteOpenHelper {
                 result.setResultId(resultId);
                 results.add(result);
             } while (c.moveToNext());
+            return results;
         }
-        return results;
+        return null;
     }
 
     public long getMaxResultId() {

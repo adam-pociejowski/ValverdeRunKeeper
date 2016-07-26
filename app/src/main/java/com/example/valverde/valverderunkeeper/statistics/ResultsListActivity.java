@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.example.valverde.valverderunkeeper.R;
-import com.example.valverde.valverderunkeeper.data.DatabaseRunResultsHelper;
+import com.example.valverde.valverderunkeeper.data.DatabaseHelper;
 import com.example.valverde.valverderunkeeper.running.Timer;
 import com.example.valverde.valverderunkeeper.running.processing_result.Result;
 import java.text.DateFormat;
@@ -32,6 +33,7 @@ public class ResultsListActivity extends AppCompatActivity {
     @BindView(R.id.presentationDistanceLabel) TextView distanceTopLabel;
     @BindView(R.id.presentationAvgSpeedLabel) TextView avgSpeedTopLabel;
     @BindView(R.id.presentationTimeLabel) TextView timeTopLabel;
+    private final String TAG = getClass().getSimpleName();
     private MyListViewAdapter myAdapter;
 
     @Override
@@ -41,20 +43,22 @@ public class ResultsListActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         final List<Result> results = getResultsFromDatabase();
         myAdapter = new MyListViewAdapter(this.getApplicationContext());
-        myAdapter.setResults(results);
-        listView.setAdapter(myAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Result result = results.get(i);
-                Intent intent = new Intent(getApplicationContext(), ResultPresentationActivity.class);
-                intent.putExtra("result", result);
-                startActivity(intent);
-                finish();
-            }
-        });
-        setAverangeStatisticsInFields(results);
-        setTopLabelsOnClickListeners(results);
+        if (results != null) {
+            myAdapter.setResults(results);
+            listView.setAdapter(myAdapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Result result = results.get(i);
+                    Intent intent = new Intent(getApplicationContext(), ResultPresentationActivity.class);
+                    intent.putExtra("result", result);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+            setAverangeStatisticsInFields(results);
+            setTopLabelsOnClickListeners(results);
+        }
     }
 
     private void setTopLabelsOnClickListeners(final List<Result> results) {
@@ -97,26 +101,28 @@ public class ResultsListActivity extends AppCompatActivity {
 
     private void setAverangeStatisticsInFields(List<Result> results) {
         if (results != null) {
-            double avgDistance = StatisticsUtils.getOverallAVGDistance(results);
-            long avgTime = StatisticsUtils.getOverallAVGTime(results);
-            double avgSpeed = StatisticsUtils.getOverallAVGSpeed(results);
-
-            DecimalFormat df = new DecimalFormat("#.##");
-            String avgDistanceString = df.format(avgDistance)+" "+getString(R.string.distanceUnits);
-            String avgTimeString = Timer.getTimeInFormat(avgTime);
-            String avgSpeedString = df.format(avgSpeed)+" "+getString(R.string.speedUnits);
-
-            avgDistanceLabel.setText(avgDistanceString);
-            avgSpeedLabel.setText(avgSpeedString);
-            avgTimeLabel.setText(avgTimeString);
+            try {
+                double avgDistance = StatisticsUtils.getOverallAVGDistance(results);
+                long avgTime = StatisticsUtils.getOverallAVGTime(results);
+                double avgSpeed = StatisticsUtils.getOverallAVGSpeed(results);
+                DecimalFormat df = new DecimalFormat("#.##");
+                String avgDistanceString = df.format(avgDistance)+" "+getString(R.string.distanceUnits);
+                String avgTimeString = Timer.getTimeInFormat(avgTime);
+                String avgSpeedString = df.format(avgSpeed)+" "+getString(R.string.speedUnits);
+                avgDistanceLabel.setText(avgDistanceString);
+                avgSpeedLabel.setText(avgSpeedString);
+                avgTimeLabel.setText(avgTimeString);
+            }
+            catch (Exception e) {
+                Log.d(TAG, e.toString());
+            }
         }
     }
 
     private List<Result> getResultsFromDatabase() {
-        DatabaseRunResultsHelper db = new DatabaseRunResultsHelper(getApplicationContext());
-        return db.getAllResults();
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        return dbHelper.getAllResults();
     }
-
 
     class MyListViewAdapter extends BaseAdapter {
         private Context context;
@@ -137,7 +143,6 @@ public class ResultsListActivity extends AppCompatActivity {
 
             String number = Integer.toString(position + 1);
             numberField.setText(number);
-
             DecimalFormat df = new DecimalFormat("#.##");
             String distance = df.format(result.getDistance())+" "+getString(R.string.distanceUnits);
             distanceField.setText(distance);

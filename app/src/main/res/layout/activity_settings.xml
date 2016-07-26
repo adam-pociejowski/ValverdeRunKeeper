@@ -40,14 +40,13 @@
                 android:layout_height="wrap_content">
 
                 <TextView android:text="@string/gpsAccuracy"
-                    style="@style/settingsFont"
+                    style="@style/settingsStyle"
                     android:layout_weight="5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
 
                 <EditText android:id="@+id/gpsAccuracyField"
-                    style="@style/settingsFont"
-                    android:inputType="number"
+                    style="@style/settingsStyle"
                     android:layout_weight="2"
                     android:gravity="end"
                     android:layout_width="0dp"
@@ -55,7 +54,7 @@
 
                 <TextView
                     android:text="@string/gpsAccuracyUnits"
-                    style="@style/settingsFont"
+                    style="@style/settingsStyle"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -67,14 +66,13 @@
                 android:layout_height="wrap_content">
 
                 <TextView android:text="@string/gpsEventsRefreshTime"
-                    style="@style/settingsFont"
+                    style="@style/settingsStyle"
                     android:layout_weight="5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
 
                 <EditText android:id="@+id/gpsEventsRefreshField"
-                    style="@style/settingsFont"
-                    android:inputType="number"
+                    style="@style/settingsStyle"
                     android:layout_weight="2"
                     android:gravity="end"
                     android:layout_width="0dp"
@@ -82,7 +80,7 @@
 
                 <TextView
                     android:text="@string/gpsTimeUnits"
-                    style="@style/settingsFont"
+                    style="@style/settingsStyle"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -94,7 +92,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView android:text="@string/gpsScreenLockSupport"
-                    style="@style/settingsFont"
+                    style="@style/settingsStyle"
                     android:layout_weight="5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
@@ -110,7 +108,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView android:text="@string/gpsSoundNotifications"
-                    style="@style/settingsFont"
+                    style="@style/settingsStyle"
                     android:layout_weight="5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
@@ -127,14 +125,13 @@
 
                 <TextView android:id="@+id/gpsSoundNotificationsDistanceIntervalLabel"
                     android:text="@string/gpsSoundNotificationsDistanceInterval"
-                    style="@style/settingsFont"
+                    style="@style/settingsStyle"
                     android:layout_weight="5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
 
                 <EditText android:id="@+id/gpsSoundNotificationsDistanceIntervalField"
-                    style="@style/settingsFont"
-                    android:inputType="number"
+                    style="@style/settingsStyle"
                     android:layout_weight="2"
                     android:gravity="end"
                     android:layout_width="0dp"
@@ -142,7 +139,7 @@
 
                 <TextView android:id="@+id/gpsSoundNotificationsDistanceIntervalUnitsField"
                     android:text="@string/distanceUnits"
-                    style="@style/settingsFont"
+                    style="@style/settingsStyle"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -154,14 +151,13 @@
 
                 <TextView android:id="@+id/gpsDefaultPaceLabel"
                     android:text="@string/gpsDefaultPace"
-                    style="@style/settingsFont"
+                    style="@style/settingsStyle"
                     android:layout_weight="5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
 
                 <EditText android:id="@+id/gpsDefaultPaceField"
-                    style="@style/settingsFont"
-                    android:inputType="number"
+                    style="@style/settingsStyle"
                     android:layout_weight="2"
                     android:gravity="end"
                     android:layout_width="0dp"
@@ -169,7 +165,7 @@
 
                 <TextView android:id="@+id/gpsDefaultPaceFieldUnits"
                     android:text="@string/speedUnits"
-                    style="@style/settingsFont"
+                    style="@style/settingsStyle"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -180,14 +176,13 @@
                 android:layout_height="wrap_content">
 
                 <TextView android:text="@string/gpsDefaultMapZoom"
-                    style="@style/settingsFont"
+                    style="@style/settingsStyle"
                     android:layout_weight="5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
 
                 <EditText android:id="@+id/gpsDefaultMapZoomField"
-                    style="@style/settingsFont"
-                    android:inputType="number"
+                    style="@style/settingsStyle"
                     android:layout_weight="2"
                     android:gravity="end"
                     android:layout_width="0dp"
@@ -202,14 +197,13 @@
                 android:layout_height="wrap_content">
 
                 <TextView android:text="@string/gpsAmountOfEventsInAvgSpeed"
-                    style="@style/settingsFont"
+                    style="@style/settingsStyle"
                     android:layout_weight="5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
 
                 <EditText android:id="@+id/gpsAmountOfEventsInAvgSpeedField"
-                    style="@style/settingsFont"
-                    android:inputType="number"
+                    style="@style/settingsStyle"
                     android:layout_weight="2"
                     android:gravity="end"
                     android:layout_width="0dp"
@@ -224,14 +218,13 @@
                 android:layout_height="wrap_content">
 
                 <TextView android:text="@string/gpsMaxUpperChangeBetweenEvents"
-                    style="@style/settingsFont"
+                    style="@style/settingsStyle"
                     android:layout_weight="5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
 
                 <EditText android:id="@+id/gpsMaxUpperChangeBetweenEventsField"
-                    style="@style/settingsFont"
-                    android:inputType="number"
+                    style="@style/settingsStyle"
                     android:layout_weight="2"
                     android:gravity="end"
                     android:layout_width="0dp"
@@ -239,7 +232,7 @@
 
                 <TextView
                     android:text="@string/speedUnits"
-                    style="@style/settingsFont"
+                    style="@style/settingsStyle"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -251,14 +244,13 @@
                 android:layout_height="wrap_content">
 
                 <TextView android:text="@string/gpsMaxLowerChangeBetweenEvents"
-                    style="@style/settingsFont"
+                    style="@style/settingsStyle"
                     android:layout_weight="5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
 
                 <EditText android:id="@+id/gpsMaxLowerChangeBetweenEventsField"
-                    style="@style/settingsFont"
-                    android:inputType="number"
+                    style="@style/settingsStyle"
                     android:layout_weight="2"
                     android:gravity="end"
                     android:layout_width="0dp"
@@ -266,7 +258,7 @@
 
                 <TextView
                     android:text="@string/speedUnits"
-                    style="@style/settingsFont"
+                    style="@style/settingsStyle"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -278,14 +270,13 @@
                 android:layout_height="wrap_content">
 
                 <TextView android:text="@string/gpsChangeIncreasePerMeasure"
-                    style="@style/settingsFont"
+                    style="@style/settingsStyle"
                     android:layout_weight="5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
 
                 <EditText android:id="@+id/gpsChangeIncreasePerMeasureField"
-                    style="@style/settingsFont"
-                    android:inputType="number"
+                    style="@style/settingsStyle"
                     android:gravity="end"
                     android:layout_weight="2"
                     android:layout_width="0dp"
@@ -293,7 +284,7 @@
 
                 <TextView
                     android:text="@string/speedUnits"
-                    style="@style/settingsFont"
+                    style="@style/settingsStyle"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content" />
             </LinearLayout>

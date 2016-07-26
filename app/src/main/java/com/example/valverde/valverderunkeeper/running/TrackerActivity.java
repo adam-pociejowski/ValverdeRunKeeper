@@ -163,6 +163,7 @@ public class TrackerActivity extends AppCompatActivity {
         else {
             float refreshTime = settings.getEventsRefreshTimeInSeconds();
             int refreshTimeInMillis = (int) (refreshTime * 1000.0);
+            Log.d(TAG, "GPS listener refresh time: "+refreshTimeInMillis+" ms");
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                      refreshTimeInMillis, 0, locationListener);
         }
@@ -205,6 +206,12 @@ public class TrackerActivity extends AppCompatActivity {
                 }
             }
         });
+        if (soundSupport) {
+            soundButton.setImageResource(R.drawable.sound_active);
+            if (pacemakerSupport) {
+                pacemakerButton.setImageResource(R.drawable.pace_icon_active);
+            }
+        }
     }
 
     private void createPopupMenu() {
